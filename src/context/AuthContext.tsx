@@ -62,11 +62,13 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         const cookieFallback = localStorage.getItem("cookieFallback");
 
         if (
-            cookieFallback === "{}" ||
+            cookieFallback === "[]" ||
             cookieFallback === null ||
             cookieFallback === undefined
-        )
+        ) {
             navigate("/signin");
+            return;
+        }
 
         checkAuthUser();
     }, []);

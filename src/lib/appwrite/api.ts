@@ -2,6 +2,9 @@ import { INewUser } from "@/types";
 import { account, appwriteConfig, avatars, databases } from "./appwrite";
 import { ID, Query } from "appwrite";
 
+//* Steps to sign up
+// 1. create new account  2. save new account in database 3. logging in > creating session
+
 export async function createNewAccount(user: INewUser) {
     try {
         const newAccount = await account.create(
@@ -83,5 +86,14 @@ export async function getCurrentUser() {
     } catch (error) {
         console.log(error);
         return null;
+    }
+}
+
+export async function signout() {
+    try {
+        const session = await account.deleteSession("current");
+        return session;
+    } catch (error) {
+        console.log(error);
     }
 }
