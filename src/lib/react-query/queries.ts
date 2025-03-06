@@ -1,7 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     createNewAccount,
     createPost,
+    getRecentPosts,
     signInAccount,
     signout,
 } from "../appwrite/api";
@@ -41,5 +42,12 @@ export function useCreatePost() {
         },
         onError: () =>
             toast("Creating post was failed. Please try again later."),
+    });
+}
+
+export function useGetRecentPosts() {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+        queryFn: getRecentPosts,
     });
 }
