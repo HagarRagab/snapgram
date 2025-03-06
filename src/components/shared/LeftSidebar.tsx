@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { useSignout } from "@/lib/react-query/queries";
 import { useEffect } from "react";
 import { sidebarLinks } from "@/constants";
+import { INavLink } from "@/types";
 
 function LeftSidebar() {
     const navigate = useNavigate();
@@ -48,7 +49,7 @@ function LeftSidebar() {
             </div>
 
             <ul className="flex flex-col gap-3 flex-1">
-                {sidebarLinks.map((link) => {
+                {sidebarLinks.map((link: INavLink) => {
                     const isActive = link.route === location.pathname;
                     return (
                         <li
