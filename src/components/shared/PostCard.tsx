@@ -60,7 +60,7 @@ function PostCard({ post }: PostCardProp) {
             </div>
 
             {/* Post caption, tags and image */}
-            <Link to={`/post/${post.$id}`}>
+            <Link to={`/posts/${post.$id}`}>
                 {/* Post caption and tags */}
                 <div className="small-medium lg:base-medium py-5">
                     <p>{post.caption}</p>

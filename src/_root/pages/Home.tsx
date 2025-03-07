@@ -6,8 +6,6 @@ import { useGetRecentPosts } from "@/lib/react-query/queries";
 function Home() {
     const { data: posts, isPending: isPostsLoading } = useGetRecentPosts();
 
-    console.log(posts);
-
     return (
         <div className="flex flex-1">
             <div className="home-container">

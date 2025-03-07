@@ -86,9 +86,11 @@ export async function signout() {
 
 export async function getCurrentUser() {
     try {
+        // Will return data about user (email, phone, accountid, bio, ...)
         const loggedInAccout = await account.get();
         if (!loggedInAccout) throw Error;
 
+        // Will return all user details in addition to documents related to that user (posts, saves, likes, email, bio, ...)
         const currentUser = await databases.listDocuments(
             appwriteConfig.databaseId,
             appwriteConfig.userCollectionId,
@@ -179,6 +181,58 @@ export async function getRecentPosts() {
 
         if (!posts) throw Error;
         return posts;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// LIKE/UNLIKE post means updating the post (document)
+export async function likePost(postId: string, likesArray: string[]) {
+    try {
+        const updatedPost = await databases.updateDocument(
+            appwriteConfig.databaseId, // databaseId
+            appwriteConfig.postCollectionId, // collectionId
+            postId, // documentId
+            { likes: likesArray } // data (optional)
+        );
+
+        if (!updatedPost) throw Error;
+        return updatedPost;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+//!
+export async function savePost(postId: string, userId: string) {
+    try {
+        const savedPost = await databases.createDocument(
+            appwriteConfig.databaseId, // databaseId
+            appwriteConfig.savesCollectionId, // collectionId
+            ID.unique(), // documentId
+            {
+                user: userId,
+                post: postId,
+            } // data
+        );
+
+        if (!savePost) throw Error;
+        return savedPost;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function unSavePost(savedRecordId: string) {
+    try {
+        const result = await databases.deleteDocument(
+            appwriteConfig.databaseId, // databaseId
+            appwriteConfig.savesCollectionId, // collectionId
+            savedRecordId // documentId
+        );
+
+        if (!result) throw Error;
+        return { status: "ok" };
     } catch (error) {
         console.log(error);
     }

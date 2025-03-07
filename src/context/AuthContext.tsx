@@ -71,7 +71,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         checkAuthUser();
-    }, []);
+    }, []); //!
 
     const value = {
         user,
