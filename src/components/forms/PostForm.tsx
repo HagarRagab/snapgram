@@ -17,14 +17,20 @@ import {
 import { Textarea } from "../ui/textarea";
 import FileUploader from "../shared/FileUploader";
 import { Input } from "../ui/input";
-import { useCreatePost } from "@/lib/react-query/queries";
+import { useCreatePost, useUpdatePost } from "@/lib/react-query/queries";
 import { useAuthContext } from "@/context/AuthContext";
 
-// This post prop exists only when updating post
-function PostForm({ post }: { post: Models.Document }) {
+type PostFormProp = {
+    // This post prop exists only when updating post
+    post?: Models.Document;
+    action: "Create" | "Edit";
+};
+
+function PostForm({ post, action }: PostFormProp) {
     const { mutateAsync: createPost, isPending: isCreatingPost } =
         useCreatePost();
-
+    const { mutateAsync: updatePost, isPending: isUpdatingPost } =
+        useUpdatePost();
     const { user } = useAuthContext();
     const navigate = useNavigate();
 
@@ -35,21 +41,36 @@ function PostForm({ post }: { post: Models.Document }) {
             caption: post ? post.caption : "",
             file: [],
             location: post ? post.location : "",
-            tags: post ? post.tags : "",
+            tags: post ? post.tags.join(", ") : "",
         },
     });
 
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof PostValidationSchema>) {
         try {
-            const newPost = await createPost({
-                ...values,
-                userId: user.id,
-            });
+            if (action === "Create") {
+                const newPost = await createPost({
+                    ...values,
+                    userId: user.id,
+                });
 
-            if (!newPost) throw Error;
+                if (!newPost) throw Error;
+                navigate("/");
+            }
+            if (action === "Edit" && post) {
+                const updatedPost = await updatePost({
+                    newPost: {
+                        ...values,
+                        postId: post.$id,
+                        imageId: post.imageId,
+                        imageUrl: post.imageUrl,
+                    },
+                });
 
-            navigate("/");
+                if (!updatedPost) throw Error;
+
+                navigate(`/posts/${updatedPost.$id}`);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -141,16 +162,19 @@ function PostForm({ post }: { post: Models.Document }) {
                     <Button
                         type="button"
                         className="shad-button_dark-4"
-                        disabled={isCreatingPost}
+                        disabled={isCreatingPost || isUpdatingPost}
+                        onClick={() => navigate(-1)}
                     >
                         Cancel
                     </Button>
                     <Button
                         type="submit"
                         className="shad-button_primary"
-                        disabled={isCreatingPost}
+                        disabled={isCreatingPost || isUpdatingPost}
                     >
-                        {isCreatingPost ? "Creating..." : "Submit"}
+                        {isCreatingPost || isUpdatingPost
+                            ? `${action}...`
+                            : "Submit"}
                     </Button>
                 </div>
             </form>

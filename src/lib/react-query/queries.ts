@@ -9,8 +9,11 @@ import {
     signInAccount,
     signout,
     getCurrentUser,
+    getPostById,
+    updatePost,
+    deletePost,
 } from "../appwrite/api";
-import { INewPost, INewUser } from "@/types";
+import { INewPost, INewUser, IUpdatePost } from "@/types";
 import { toast } from "sonner";
 import { QUERY_KEYS } from "./queryKeys";
 
@@ -128,5 +131,50 @@ export function useUnSavePost() {
                 queryKey: [QUERY_KEYS.GET_CURRENT_USER],
             });
         },
+    });
+}
+
+export function useGetPostById(postId?: string) {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_POST_BY_ID, postId],
+        queryFn: () => getPostById(postId),
+        enabled: !!postId, // incase there is no postId enabled will be false to disable automatic refetching
+    });
+}
+
+export function useUpdatePost() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ newPost }: { newPost: IUpdatePost }) =>
+            updatePost(newPost),
+        onSuccess: () => {
+            toast("Post updated successfully.");
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+            });
+        },
+        onError: () => toast("Updating post failed. Please try again."),
+    });
+}
+
+export function useDeletePost() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({
+            postId,
+            imageId,
+        }: {
+            postId?: string;
+            imageId?: string;
+        }) => deletePost(postId, imageId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+            });
+            toast("Post deleted successfully.");
+        },
+        onError: () => toast("Post deletion failed. Please try again."),
     });
 }

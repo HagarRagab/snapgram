@@ -1,13 +1,15 @@
 import { useCallback, useState } from "react";
 import { FileWithPath, useDropzone } from "react-dropzone";
+
 import { Button } from "../ui/button";
+import fileUploadIcon from "/assets/icons/file-upload.svg";
 
 type FileUploaderProps = {
     fieldChange: (file: File[]) => void;
     imageUrl: string;
 };
 
-function FileUploader({ fieldChange, imageUrl = "" }: FileUploaderProps) {
+function FileUploader({ fieldChange, imageUrl }: FileUploaderProps) {
     // const [file, setFile] = useState<File[]>([]);
     const [fileUrl, setFileUrl] = useState<string>(imageUrl);
 
@@ -36,7 +38,7 @@ function FileUploader({ fieldChange, imageUrl = "" }: FileUploaderProps) {
         >
             <input {...getInputProps()} />
 
-            {fileUrl && (
+            {fileUrl ? (
                 <>
                     <div className="flex-center flex-1 p-5 w-full lg:p-10">
                         <img
@@ -49,12 +51,10 @@ function FileUploader({ fieldChange, imageUrl = "" }: FileUploaderProps) {
                         Click or drag photo to replace
                     </p>
                 </>
-            )}
-
-            {!fileUrl && (
+            ) : (
                 <div className="file_uploader-box">
                     <img
-                        src="assets/icons/file-upload.svg"
+                        src={fileUploadIcon}
                         alt="file upload"
                         width={96}
                         height={77}

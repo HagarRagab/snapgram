@@ -1,4 +1,4 @@
-import { INewPost, INewUser } from "@/types";
+import { INewPost, INewUser, IUpdatePost } from "@/types";
 import {
     account,
     appwriteConfig,
@@ -109,22 +109,11 @@ export async function getCurrentUser() {
 export async function createPost(post: INewPost) {
     try {
         // 1. Store file (image) in backend(appwirte) storage
-        const createdFileRes = await storage.createFile(
-            appwriteConfig.storageId, // bucketId
-            ID.unique(), // fileId
-            post.file[0] // file
-        );
+        const createdFileRes = await createFile(post.file[0]);
         if (!createdFileRes) throw Error;
 
         // 2. Get file (image) url in the appwrite storage
-        const createdFileUrl = storage.getFilePreview(
-            appwriteConfig.storageId, // bucketId
-            createdFileRes.$id, // fileId
-            2000, // width (optional)
-            2000, // height (optional)
-            ImageGravity.Top, // gravity (optional)
-            100 // quality (optional)
-        );
+        const createdFileUrl = getFilePreview(createdFileRes.$id);
         if (!createdFileUrl) {
             await deleteFile(createdFileRes.$id);
             throw Error;
@@ -156,6 +145,32 @@ export async function createPost(post: INewPost) {
     } catch (error) {
         console.log(error);
     }
+}
+
+async function createFile(file: File) {
+    try {
+        const createdFile = await storage.createFile(
+            appwriteConfig.storageId, // bucketId
+            ID.unique(), // fileId
+            file // file
+        );
+
+        return createdFile;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+function getFilePreview(fileId: string) {
+    const filePreview = storage.getFilePreview(
+        appwriteConfig.storageId, // bucketId
+        fileId, // fileId
+        2000, // width (optional)
+        2000, // height (optional)
+        ImageGravity.Top, // gravity (optional)
+        100 // quality (optional)
+    );
+    return filePreview;
 }
 
 export async function deleteFile(fileId: string) {
@@ -232,6 +247,103 @@ export async function unSavePost(savedRecordId: string) {
         );
 
         if (!result) throw Error;
+        return { status: "ok" };
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getPostById(postId?: string) {
+    try {
+        if (!postId) throw Error;
+        const post = await databases.getDocument(
+            appwriteConfig.databaseId, // databaseId
+            appwriteConfig.postCollectionId, // collectionId
+            postId // documentId
+        );
+
+        if (!post) throw Error;
+        return post;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function updatePost(updatedPost: IUpdatePost) {
+    // Checking if the user changed the image [changed => file array length will be more than 0 / NOT changed file array will be empty => BECAUSE we only add the Media File into the file array incase the user drag and drop file or uploaded image from computer ==> check FileUploader.tsx in onDrop function]
+    const hasFileToUpload = updatedPost.file.length > 0;
+
+    try {
+        let image = {
+            imageId: updatedPost.imageId,
+            imageUrl: updatedPost.imageUrl,
+        };
+
+        if (hasFileToUpload) {
+            // 1. Create file
+            const createdFileRes = await createFile(updatedPost.file[0]);
+
+            if (!createdFileRes) throw Error;
+            // 2. Get file preview
+            const filePreviewUrl = getFilePreview(createdFileRes.$id);
+
+            if (!filePreviewUrl) {
+                await deleteFile(createdFileRes.$id);
+                throw Error;
+            }
+
+            image = {
+                ...image,
+                imageId: createdFileRes.$id,
+                imageUrl: new URL(filePreviewUrl),
+            };
+        }
+
+        const tags = updatedPost.tags?.replace(/\s/g, "").split(",");
+        // 3. Update Document
+        const result = await databases.updateDocument(
+            appwriteConfig.databaseId, // databaseId
+            appwriteConfig.postCollectionId, // collectionId
+            updatedPost.postId, // documentId
+            {
+                caption: updatedPost.caption,
+                imageId: image.imageId,
+                imageUrl: image.imageUrl,
+                // file: updatedPost.file,
+                location: updatedPost.location,
+                tags,
+            } // data (optional)
+        );
+
+        // 4. Check if updating file was failed
+        if (!result) {
+            if (hasFileToUpload) await deleteFile(image.imageId);
+            throw Error;
+        }
+
+        // 5. Delete old file from storage
+        await deleteFile(updatedPost.imageId);
+
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function deletePost(postId?: string, imageId?: string) {
+    if (!postId || !imageId) return;
+
+    try {
+        const status = await databases.deleteDocument(
+            appwriteConfig.databaseId, // databaseId
+            appwriteConfig.postCollectionId, // collectionId
+            postId // documentId
+        );
+
+        if (!status) throw Error;
+
+        await deleteFile(imageId);
+
         return { status: "ok" };
     } catch (error) {
         console.log(error);

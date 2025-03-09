@@ -5,6 +5,8 @@ import { useSignout } from "@/lib/react-query/queries";
 import { useEffect } from "react";
 import { sidebarLinks } from "@/constants";
 import { INavLink } from "@/types";
+import logo from "/assets/images/logo.svg";
+import logoutIcon from "/assets/icons/logout.svg";
 
 function LeftSidebar() {
     const navigate = useNavigate();
@@ -20,12 +22,7 @@ function LeftSidebar() {
         <nav className="leftsidebar">
             <div className="flex flex-col gap-10">
                 <Link to="/">
-                    <img
-                        src="assets/images/logo.svg"
-                        alt="logo"
-                        width={170}
-                        height={36}
-                    />
+                    <img src={logo} alt="logo" width={170} height={36} />
                 </Link>
                 <Link
                     to={`/profile/${user.id}`}
@@ -81,7 +78,7 @@ function LeftSidebar() {
                 className="shad-button_ghost cursor-pointer"
                 onClick={() => signout()}
             >
-                <img src="assets/icons/logout.svg" alt="logout" />
+                <img src={logoutIcon} alt="logout" />
                 <p className="small-medium lg:base-medium">Logout</p>
             </Button>
         </nav>

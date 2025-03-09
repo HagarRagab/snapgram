@@ -11,7 +11,7 @@ import savedIcon from "/assets/icons/saved.svg";
 import Loader from "./Loader";
 
 type PostStatsProp = {
-    post: Models.Document;
+    post?: Models.Document;
     userId: string;
 };
 
@@ -22,10 +22,10 @@ function PostStats({ post, userId }: PostStatsProp) {
     const { mutate: unSavePost, isPending: isUnSaving } = useUnSavePost();
 
     const savedPostRecord = currentUser?.save.find(
-        (record: Models.Document) => record.post.$id === post.$id
+        (record: Models.Document) => record.post.$id === post?.$id
     );
     const [likes, setLikes] = useState(() =>
-        post.likes.map((user: Models.Document) => user.$id)
+        post?.likes.map((user: Models.Document) => user.$id)
     );
     const [isSaved, setIsSaved] = useState(() => false);
     const isLiked = likes.includes(userId);
@@ -44,7 +44,7 @@ function PostStats({ post, userId }: PostStatsProp) {
             updatedLikes.push(userId);
         }
 
-        likePost({ postId: post.$id, likesArray: updatedLikes });
+        likePost({ postId: post?.$id || "", likesArray: updatedLikes });
         setLikes(updatedLikes);
     };
 
@@ -55,7 +55,7 @@ function PostStats({ post, userId }: PostStatsProp) {
             unSavePost({ savedRecordId: savedPostRecord.$id });
             setIsSaved(false);
         } else {
-            savePost({ postId: post.$id, userId });
+            savePost({ postId: post?.$id || "", userId });
             setIsSaved(true);
         }
     };
