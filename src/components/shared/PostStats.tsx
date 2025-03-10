@@ -61,9 +61,9 @@ function PostStats({ post, userId }: PostStatsProp) {
     };
 
     return (
-        <div className="flex-between z-20">
+        <div className="flex-between z-20 gap-2">
             {/* Likes */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
                 <img
                     src={isLiked ? likedIcon : likeIcon}
                     alt="like"

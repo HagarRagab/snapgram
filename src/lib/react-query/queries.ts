@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+    useInfiniteQuery,
+    useMutation,
+    useQuery,
+    useQueryClient,
+} from "@tanstack/react-query";
 import {
     createNewAccount,
     createPost,
@@ -12,10 +17,13 @@ import {
     getPostById,
     updatePost,
     deletePost,
+    getInfinitePosts,
+    searchPosts,
 } from "../appwrite/api";
 import { INewPost, INewUser, IUpdatePost } from "@/types";
 import { toast } from "sonner";
 import { QUERY_KEYS } from "./queryKeys";
+import { Models } from "appwrite";
 
 export function useCreateAccount() {
     return useMutation({
@@ -176,5 +184,27 @@ export function useDeletePost() {
             toast("Post deleted successfully.");
         },
         onError: () => toast("Post deletion failed. Please try again."),
+    });
+}
+
+export function useGetPosts() {
+    return useInfiniteQuery({
+        queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
+        queryFn: ({ pageParam }: { pageParam?: number }) =>
+            getInfinitePosts(pageParam),
+        getNextPageParam: (lastPage: Models.Document | undefined) => {
+            // Note that getInfinitePosts returns (e.g., { documents: Post[], total: number })
+            if (lastPage?.documents?.length === 0) return null;
+            const lastPost = lastPage?.documents?.at(-1);
+            return lastPost?.$id;
+        },
+    });
+}
+
+export function useSearchPosts(searchTerm: string) {
+    return useQuery({
+        queryKey: [QUERY_KEYS.SEARCH_POSTS, searchTerm],
+        queryFn: () => searchPosts(searchTerm),
+        enabled: !!searchTerm,
     });
 }

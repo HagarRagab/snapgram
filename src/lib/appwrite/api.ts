@@ -56,7 +56,7 @@ export async function saveUserToDB(user: {
 
         return newUser;
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return error;
     }
 }
@@ -70,7 +70,7 @@ export async function signInAccount(user: { email: string; password: string }) {
 
         return session;
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return error;
     }
 }
@@ -80,7 +80,7 @@ export async function signout() {
         const session = await account.deleteSession("current");
         return session;
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
@@ -101,7 +101,7 @@ export async function getCurrentUser() {
 
         return currentUser.documents[0];
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return null;
     }
 }
@@ -143,7 +143,7 @@ export async function createPost(post: INewPost) {
 
         return newPost;
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
@@ -157,7 +157,7 @@ async function createFile(file: File) {
 
         return createdFile;
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
@@ -182,7 +182,7 @@ export async function deleteFile(fileId: string) {
 
         return { status: "ok" };
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
@@ -197,7 +197,7 @@ export async function getRecentPosts() {
         if (!posts) throw Error;
         return posts;
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
@@ -214,7 +214,7 @@ export async function likePost(postId: string, likesArray: string[]) {
         if (!updatedPost) throw Error;
         return updatedPost;
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
@@ -234,7 +234,7 @@ export async function savePost(postId: string, userId: string) {
         if (!savePost) throw Error;
         return savedPost;
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
@@ -249,7 +249,7 @@ export async function unSavePost(savedRecordId: string) {
         if (!result) throw Error;
         return { status: "ok" };
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
@@ -265,7 +265,7 @@ export async function getPostById(postId?: string) {
         if (!post) throw Error;
         return post;
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
@@ -326,7 +326,7 @@ export async function updatePost(updatedPost: IUpdatePost) {
 
         return result;
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
@@ -346,6 +346,44 @@ export async function deletePost(postId?: string, imageId?: string) {
 
         return { status: "ok" };
     } catch (error) {
-        console.log(error);
+        console.error(error);
+    }
+}
+
+export async function getInfinitePosts(pageParam?: number) {
+    const queries: string[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
+
+    if (pageParam) queries.push(Query.cursorAfter(pageParam.toString()));
+
+    try {
+        const posts = await databases.listDocuments(
+            appwriteConfig.databaseId, // databaseId
+            appwriteConfig.postCollectionId, // collectionId
+            queries // queries (optional)
+        );
+
+        if (!posts) throw Error;
+
+        return posts;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function searchPosts(searchTerm: string) {
+    try {
+        if (!searchTerm) throw Error;
+
+        const posts = await databases.listDocuments(
+            appwriteConfig.databaseId, // databaseId
+            appwriteConfig.postCollectionId, // collectionId
+            [Query.search("caption", searchTerm)] // queries (optional)
+        );
+
+        if (!posts) throw Error;
+
+        return posts;
+    } catch (error) {
+        console.error(error);
     }
 }
