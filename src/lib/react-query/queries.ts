@@ -19,6 +19,7 @@ import {
     deletePost,
     getInfinitePosts,
     searchPosts,
+    getUsers,
 } from "../appwrite/api";
 import { INewPost, INewUser, IUpdatePost } from "@/types";
 import { toast } from "sonner";
@@ -206,5 +207,17 @@ export function useSearchPosts(searchTerm: string) {
         queryKey: [QUERY_KEYS.SEARCH_POSTS, searchTerm],
         queryFn: () => searchPosts(searchTerm),
         enabled: !!searchTerm,
+    });
+}
+
+export function useGetUsers() {
+    return useInfiniteQuery({
+        queryKey: [QUERY_KEYS.GET_USERS],
+        queryFn: ({ pageParam }: { pageParam?: number }) => getUsers(pageParam),
+        getNextPageParam: (lastPage: Models.Document | undefined) => {
+            if (lastPage?.documents.length === 0) return null;
+            const lastPost = lastPage?.documents?.at(-1);
+            return lastPost.$id;
+        },
     });
 }

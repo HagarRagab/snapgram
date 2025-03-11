@@ -9,6 +9,7 @@ import GridPostList from "@/components/shared/GridPostList";
 import searchIcon from "/assets/icons/search.svg";
 import filterIcon from "/assets/icons/filter.svg";
 import Loader from "@/components/shared/Loader";
+import TopPage from "@/components/shared/TopPage";
 
 function Explore() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -24,18 +25,12 @@ function Explore() {
         fetchNextPage,
         isFetchingNextPage,
         hasNextPage,
+        isPending: isLoadingPosts,
     } = useGetPosts();
 
     useEffect(() => {
         if (inView && !searchTerm.trim()) fetchNextPage();
     }, [inView, searchTerm, fetchNextPage]);
-
-    if (!posts)
-        return (
-            <div className="flex-center w-full h-full">
-                <Loader />
-            </div>
-        );
 
     const shouldShowSearchResults = !!searchTerm.trim();
     const shouldShowPosts =
@@ -46,7 +41,7 @@ function Explore() {
         <div className="explore-container">
             {/* Heading + Search Bar */}
             <div className="explore-inner_container">
-                <h2 className="h3-bold md:h2-bold w-full">Search Posts</h2>
+                <TopPage>Search Posts</TopPage>
                 <div className="flex gap-1 px-4 w-full rounded-lg bg-dark-4">
                     <img src={searchIcon} alt="search" width={24} height={24} />
                     <Input
@@ -73,29 +68,34 @@ function Explore() {
             </div>
 
             {/* Popular Today Results */}
-            <div>
-                {shouldShowSearchResults ? (
-                    <SearchResults
-                        searchPosts={searchPosts?.documents}
-                        isLoadingSearchResults={isLoadingSearchResults}
-                    />
-                ) : !shouldShowPosts ? (
-                    <p className="text-light-4">End of posts</p>
-                ) : (
-                    posts.pages.map((item, index) => (
-                        <GridPostList
-                            key={`post-${index}`}
-                            posts={item?.documents}
-                        />
-                    ))
-                )}
-            </div>
-
-            {/* Next page */}
-            {hasNextPage && !shouldShowSearchResults && (
-                <div className="mt-10" ref={ref}>
-                    {isFetchingNextPage && <Loader />}
+            {!posts && isLoadingPosts ? (
+                <div className="flex-center w-full h-full">
+                    <Loader />
                 </div>
+            ) : (
+                <>
+                    <div>
+                        {shouldShowSearchResults ? (
+                            <SearchResults
+                                searchPosts={searchPosts?.documents}
+                                isLoadingSearchResults={isLoadingSearchResults}
+                            />
+                        ) : (
+                            <GridPostList posts={posts} />
+                        )}
+                    </div>
+
+                    {/* Next page */}
+                    {hasNextPage && !shouldShowSearchResults && (
+                        <div className="mt-10" ref={ref}>
+                            {isFetchingNextPage && <Loader />}
+                        </div>
+                    )}
+
+                    {!shouldShowPosts && !shouldShowSearchResults && (
+                        <p className="text-light-4">- End of posts -</p>
+                    )}
+                </>
             )}
         </div>
     );

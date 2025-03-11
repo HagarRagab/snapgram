@@ -387,3 +387,21 @@ export async function searchPosts(searchTerm: string) {
         console.error(error);
     }
 }
+
+export async function getUsers(pageParam?: number) {
+    const queries = [Query.limit(9)];
+    if (pageParam) queries.push(Query.cursorAfter(pageParam.toString()));
+
+    try {
+        const users = await databases.listDocuments(
+            appwriteConfig.databaseId, // databaseId
+            appwriteConfig.userCollectionId, // collectionId
+            queries // queries (optional)
+        );
+
+        if (!users) throw Error;
+        return users;
+    } catch (error) {
+        console.error(error);
+    }
+}
