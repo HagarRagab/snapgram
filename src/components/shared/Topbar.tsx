@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router";
 import { Button } from "../ui/button";
 import { useSignout } from "@/lib/react-query/queries";
 import { useAuthContext } from "@/context/AuthContext";
+import logo from "/assets/images/logo.svg";
+import logoutIcon from "/assets/icons/logout.svg";
 
 function Topbar() {
     const navigate = useNavigate();
@@ -21,21 +23,16 @@ function Topbar() {
         <header className="topbar">
             <div className="flex-between gap-3 px-5 py-4">
                 <Link to="/">
-                    <img
-                        src="assets/images/logo.svg"
-                        alt="logo"
-                        width={130}
-                        height={325}
-                    />
+                    <img src={logo} alt="logo" width={130} height={325} />
                 </Link>
 
-                <div className="flex gap-4">
+                <div className="flex">
                     <Button
                         variant="ghost"
                         className="shad-button_ghost cursor-pointer"
                         onClick={() => signout()}
                     >
-                        <img src="assets/icons/logout.svg" alt="logout icon" />
+                        <img src={logoutIcon} alt="logout icon" />
                     </Button>
                     <Link to={`/profile/${user.id}`} className="flex-center">
                         <img

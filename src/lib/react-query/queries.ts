@@ -17,9 +17,9 @@ import {
     getPostById,
     updatePost,
     deletePost,
-    getInfinitePosts,
-    searchPosts,
+    getPosts,
     getUsers,
+    getUserById,
 } from "../appwrite/api";
 import { INewPost, INewUser, IUpdatePost } from "@/types";
 import { toast } from "sonner";
@@ -49,6 +49,14 @@ export function useGetCurrentUser() {
     return useQuery({
         queryKey: [QUERY_KEYS.GET_CURRENT_USER],
         queryFn: getCurrentUser,
+    });
+}
+
+export function useGetUserById(id?: string) {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_USER_BY_ID, id],
+        queryFn: () => getUserById(id),
+        enabled: !!id,
     });
 }
 
@@ -188,25 +196,25 @@ export function useDeletePost() {
     });
 }
 
-export function useGetPosts() {
+export function useGetPosts({
+    limits,
+    searchTerm,
+}: {
+    limits: number;
+    searchTerm?: string;
+}) {
     return useInfiniteQuery({
-        queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
+        queryKey: searchTerm
+            ? [QUERY_KEYS.SEARCH_POSTS, searchTerm]
+            : [QUERY_KEYS.GET_INFINITE_POSTS],
         queryFn: ({ pageParam }: { pageParam?: number }) =>
-            getInfinitePosts(pageParam),
+            getPosts(limits, searchTerm, pageParam),
         getNextPageParam: (lastPage: Models.Document | undefined) => {
             // Note that getInfinitePosts returns (e.g., { documents: Post[], total: number })
             if (lastPage?.documents?.length === 0) return null;
             const lastPost = lastPage?.documents?.at(-1);
             return lastPost?.$id;
         },
-    });
-}
-
-export function useSearchPosts(searchTerm: string) {
-    return useQuery({
-        queryKey: [QUERY_KEYS.SEARCH_POSTS, searchTerm],
-        queryFn: () => searchPosts(searchTerm),
-        enabled: !!searchTerm,
     });
 }
 

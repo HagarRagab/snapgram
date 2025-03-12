@@ -1,31 +1,58 @@
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import { Models } from "appwrite";
 
-import { useGetPosts, useGetRecentPosts } from "@/lib/react-query/queries";
+import { useGetPosts } from "@/lib/react-query/queries";
 import Loader from "../../components/shared/Loader";
 import PostCard from "../../components/shared/PostCard";
 import TopPage from "@/components/shared/TopPage";
 
 function Home() {
-    const { data: posts, isPending: isPostsLoading } = useGetRecentPosts();
-    useGetPosts();
+    const {
+        data: posts,
+        isPending: isPostsLoading,
+        hasNextPage,
+        fetchNextPage,
+        isFetchingNextPage,
+    } = useGetPosts({ limits: 6 });
+
+    const { ref, inView } = useInView();
+
+    useEffect(() => {
+        if (inView) fetchNextPage();
+    }, [inView, fetchNextPage]);
 
     return (
         <div className="flex flex-1">
             <div className="home-container">
                 <div className="home-posts">
                     <TopPage>Home Feed</TopPage>
-                    {isPostsLoading ? (
+                    {isPostsLoading && !posts ? (
                         <Loader />
                     ) : (
                         <ul className="flex flex-1 flex-col w-full gap-9">
-                            {posts?.documents?.map((post: Models.Document) => (
-                                <li
-                                    key={post.$id}
-                                    className="flex justify-center w-full"
-                                >
-                                    <PostCard post={post} />
-                                </li>
-                            ))}
+                            {posts?.pages?.map((item) => {
+                                return item?.documents.map(
+                                    (post: Models.Document) => (
+                                        <li
+                                            key={post.$id}
+                                            className="flex justify-center w-full"
+                                        >
+                                            <PostCard post={post} />
+                                        </li>
+                                    )
+                                );
+                            })}
+
+                            {hasNextPage ? (
+                                <div ref={ref}>
+                                    {isFetchingNextPage && <Loader />}
+                                </div>
+                            ) : (
+                                <p className="text-light-4 text-center">
+                                    - End of posts -
+                                </p>
+                            )}
                         </ul>
                     )}
                 </div>

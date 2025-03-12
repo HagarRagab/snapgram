@@ -7,6 +7,7 @@ import {
     CreatePost,
     Explore,
     Home,
+    LikedPosts,
     PostDetails,
     Profile,
     Saved,
@@ -17,6 +18,8 @@ import SingupForm from "./_auth/forms/SingupForm";
 import AuthLayout from "./_auth/AuthLayout";
 import RootLayout from "./_root/RootLayout";
 import EditPost from "./_root/pages/EditPost";
+import ProtectedRoute from "./_root/pages/ProtectedRoute";
+import ProfilePosts from "./_root/pages/ProfilePosts";
 
 function App() {
     return (
@@ -37,7 +40,17 @@ function App() {
                     <Route path="/create-post" element={<CreatePost />} />
                     <Route path="/update-post/:id" element={<EditPost />} />
                     <Route path="/posts/:id" element={<PostDetails />} />
-                    <Route path="/profile/:id" element={<Profile />} />
+                    <Route path="/profile/:id" element={<Profile />}>
+                        <Route index element={<ProfilePosts />} />
+                        <Route
+                            path="/profile/:id/liked-posts"
+                            element={
+                                <ProtectedRoute>
+                                    <LikedPosts />
+                                </ProtectedRoute>
+                            }
+                        />
+                    </Route>
                     <Route
                         path="/update-profile/:id"
                         element={<UpdateProfile />}

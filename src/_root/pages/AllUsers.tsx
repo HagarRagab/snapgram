@@ -17,8 +17,6 @@ function AllUsers() {
     } = useGetUsers();
     const { ref, inView } = useInView();
 
-    console.log(hasNextPage);
-
     useEffect(() => {
         if (inView) fetchNextPage();
     }, [fetchNextPage, inView]);

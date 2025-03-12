@@ -225,11 +225,19 @@ layer(base);
 }
 
 @utility profile-inner_container {
-    @apply flex items-center md:mb-8 xl:items-start gap-8 flex-col xl:flex-row relative max-w-5xl w-full;
+    @apply flex items-center md:mb-8 xl:items-start gap-8 flex-col relative max-w-5xl w-full;
+}
+
+@utility profile-tabs {
+    @apply flex-center w-fit bg-dark-2  transition xl:flex-initial rounded-lg overflow-hidden border-dark-4 border-1;
 }
 
 @utility profile-tab {
-    @apply flex-center gap-3 py-4 w-48 bg-dark-2  transition flex-1 xl:flex-initial;
+    @apply flex-center gap-3 px-4 py-2 w-48 bg-dark-2  transition flex-1 xl:flex-initial text-base not-last:border-r-1 not-last:border-r-dark-4 hover:bg-dark-4;
+}
+
+@utility profile-tab-active {
+    @apply bg-dark-4;
 }
 
 /* Saved */

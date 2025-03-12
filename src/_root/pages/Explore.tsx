@@ -2,23 +2,20 @@ import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { useDebounce } from "@/hooks/useDebounce";
-import { useGetPosts, useSearchPosts } from "@/lib/react-query/queries";
+import { useGetPosts } from "@/lib/react-query/queries";
 import { Input } from "@/components/ui/input";
 import SearchResults from "@/components/shared/SearchResults";
 import GridPostList from "@/components/shared/GridPostList";
-import searchIcon from "/assets/icons/search.svg";
-import filterIcon from "/assets/icons/filter.svg";
 import Loader from "@/components/shared/Loader";
 import TopPage from "@/components/shared/TopPage";
+import Filter from "@/components/shared/Filter";
+import searchIcon from "/assets/icons/search.svg";
 
 function Explore() {
     const [searchTerm, setSearchTerm] = useState("");
     const { ref, inView } = useInView();
 
-    const debouncedSearch = useDebounce(searchTerm);
-
-    const { data: searchPosts, isPending: isLoadingSearchResults } =
-        useSearchPosts(debouncedSearch);
+    const debouncedSearch = useDebounce(searchTerm.trim());
 
     const {
         data: posts,
@@ -26,16 +23,13 @@ function Explore() {
         isFetchingNextPage,
         hasNextPage,
         isPending: isLoadingPosts,
-    } = useGetPosts();
+    } = useGetPosts({ limits: 9, searchTerm: debouncedSearch });
 
     useEffect(() => {
-        if (inView && !searchTerm.trim()) fetchNextPage();
+        if (inView) fetchNextPage();
     }, [inView, searchTerm, fetchNextPage]);
 
-    const shouldShowSearchResults = !!searchTerm.trim();
-    const shouldShowPosts =
-        !shouldShowSearchResults &&
-        posts?.pages.every((page) => page?.documents.length > 0); //!
+    const isUserSearching = !!searchTerm.trim();
 
     return (
         <div className="explore-container">
@@ -59,12 +53,7 @@ function Explore() {
                 {/* Heading */}
                 <h3 className="body-bold md:h3-bold">Popular Today</h3>
                 {/* Filter */}
-                <div className="flex-center gap-3 bg-dark-3 rounded-xl px-4 py-2 cursor-pointer">
-                    <p className="small-medium md:base-medium text-light-2">
-                        All
-                    </p>
-                    <img src={filterIcon} alt="filter" width={20} height={20} />
-                </div>
+                <Filter />
             </div>
 
             {/* Popular Today Results */}
@@ -75,10 +64,10 @@ function Explore() {
             ) : (
                 <>
                     <div>
-                        {shouldShowSearchResults ? (
+                        {isUserSearching ? (
                             <SearchResults
-                                searchPosts={searchPosts?.documents}
-                                isLoadingSearchResults={isLoadingSearchResults}
+                                searchPosts={posts}
+                                isLoadingSearchResults={isLoadingPosts}
                             />
                         ) : (
                             <GridPostList posts={posts} />
@@ -86,14 +75,10 @@ function Explore() {
                     </div>
 
                     {/* Next page */}
-                    {hasNextPage && !shouldShowSearchResults && (
-                        <div className="mt-10" ref={ref}>
-                            {isFetchingNextPage && <Loader />}
-                        </div>
-                    )}
-
-                    {!shouldShowPosts && !shouldShowSearchResults && (
+                    {!hasNextPage && posts?.pages[0]?.documents?.length ? (
                         <p className="text-light-4">- End of posts -</p>
+                    ) : (
+                        <div ref={ref}>{isFetchingNextPage && <Loader />}</div>
                     )}
                 </>
             )}

@@ -106,6 +106,22 @@ export async function getCurrentUser() {
     }
 }
 
+export async function getUserById(id?: string) {
+    try {
+        if (!id) throw Error;
+        const user = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.userCollectionId,
+            [Query.equal("$id", id)]
+        );
+
+        if (!user) throw Error;
+        return user.documents[0];
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export async function createPost(post: INewPost) {
     try {
         // 1. Store file (image) in backend(appwirte) storage
@@ -350,9 +366,17 @@ export async function deletePost(postId?: string, imageId?: string) {
     }
 }
 
-export async function getInfinitePosts(pageParam?: number) {
-    const queries: string[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
+export async function getPosts(
+    limits: number = 9,
+    searchTerm?: string,
+    pageParam?: number
+) {
+    const queries: string[] = [
+        Query.orderDesc("$createdAt"),
+        Query.limit(limits),
+    ];
 
+    if (searchTerm) queries.push(Query.search("caption", searchTerm));
     if (pageParam) queries.push(Query.cursorAfter(pageParam.toString()));
 
     try {
@@ -360,24 +384,6 @@ export async function getInfinitePosts(pageParam?: number) {
             appwriteConfig.databaseId, // databaseId
             appwriteConfig.postCollectionId, // collectionId
             queries // queries (optional)
-        );
-
-        if (!posts) throw Error;
-
-        return posts;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-export async function searchPosts(searchTerm: string) {
-    try {
-        if (!searchTerm) throw Error;
-
-        const posts = await databases.listDocuments(
-            appwriteConfig.databaseId, // databaseId
-            appwriteConfig.postCollectionId, // collectionId
-            [Query.search("caption", searchTerm)] // queries (optional)
         );
 
         if (!posts) throw Error;
@@ -403,5 +409,6 @@ export async function getUsers(pageParam?: number) {
         return users;
     } catch (error) {
         console.error(error);
+        return error;
     }
 }
