@@ -23,7 +23,7 @@ function PostCreatorInfo({ post }: PostCreatorInfoProp) {
                     to={`/profile/${post?.creator?.$id}`}
                     className="base-medium lg:body-bold text-light-1"
                 >
-                    {post?.creator?.username}
+                    {post?.creator?.name}
                 </Link>
                 <div className="flex-center gap-2 text-light-3">
                     <span className="subtle-semibold lg:small-regular">

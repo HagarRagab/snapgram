@@ -20,8 +20,9 @@ import {
     getPosts,
     getUsers,
     getUserById,
+    updateUser,
 } from "../appwrite/api";
-import { INewPost, INewUser, IUpdatePost } from "@/types";
+import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { toast } from "sonner";
 import { QUERY_KEYS } from "./queryKeys";
 import { Models } from "appwrite";
@@ -96,16 +97,13 @@ export function useLikePost() {
         }) => likePost(postId, likesArray),
         onSuccess: (data) => {
             queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.GET_POST_BY_ID, data?.$id],
-            });
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
-            });
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.GET_POSTS],
-            });
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.GET_CURRENT_USER], //!
+                queryKey: [
+                    QUERY_KEYS.GET_RECENT_POSTS,
+                    QUERY_KEYS.GET_POSTS,
+                    QUERY_KEYS.GET_CURRENT_USER,
+                    QUERY_KEYS.GET_POST_BY_ID,
+                    data?.$id,
+                ],
             });
         },
     });
@@ -168,7 +166,11 @@ export function useUpdatePost() {
         onSuccess: () => {
             toast("Post updated successfully.");
             queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+                queryKey: [
+                    QUERY_KEYS.GET_RECENT_POSTS,
+                    QUERY_KEYS.GET_POSTS,
+                    QUERY_KEYS.GET_INFINITE_POSTS,
+                ],
             });
         },
         onError: () => toast("Updating post failed. Please try again."),
@@ -227,5 +229,26 @@ export function useGetUsers() {
             const lastPost = lastPage?.documents?.at(-1);
             return lastPost.$id;
         },
+    });
+}
+
+export function useUpdateUser() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ newInfo }: { newInfo: IUpdateUser }) =>
+            updateUser(newInfo),
+        onSuccess: (data) => {
+            toast("Your info updated successfully!");
+            queryClient.invalidateQueries({
+                queryKey: [
+                    QUERY_KEYS.GET_CURRENT_USER,
+                    QUERY_KEYS.GET_USER_BY_ID,
+                    QUERY_KEYS.GET_USERS,
+                    [QUERY_KEYS.GET_USER_BY_ID, data?.$id],
+                ],
+            });
+        },
+        onError: () => toast("Failed to updated your info. Please try again."),
     });
 }

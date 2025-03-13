@@ -112,6 +112,7 @@ function PostForm({ post, action }: PostFormProp) {
                                 <FileUploader
                                     fieldChange={field.onChange}
                                     imageUrl={post?.imageUrl} // This only for updating post
+                                    type="post"
                                 />
                             </FormControl>
                             <FormMessage className="shad-form_message" />

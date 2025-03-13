@@ -35,7 +35,7 @@ function Profile() {
                         <div>
                             <div className="flex items-center gap-10">
                                 <h1 className="h3-bold md:h1-semibold mb-1">
-                                    {user?.username}
+                                    {user?.name}
                                 </h1>
                                 {!isLoggedInUserProfile ? (
                                     <Button className="bg-primary-500">
@@ -59,7 +59,7 @@ function Profile() {
                             </div>
 
                             <p className="small-regular text-light-3">
-                                @{user?.username.replace(/\s/g, "")}
+                                {user?.username}
                             </p>
                         </div>
 
@@ -71,12 +71,8 @@ function Profile() {
                             <ProfileStat count={20}>Following</ProfileStat>
                         </div>
 
-                        <p className="max-w-xl">
+                        <p className="max-w-xl whitespace-pre-wrap">
                             {user?.bio}
-                            Lorem, ipsum dolor sit amet consectetur adipisicing
-                            elit. Aliquam distinctio dolorum, praesentium
-                            voluptatum rerum, dicta laudantium non nisi mollitia
-                            consequatur
                         </p>
                     </div>
                 </div>

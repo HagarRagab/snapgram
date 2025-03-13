@@ -18,8 +18,8 @@ function UserCard({ user }: UserCardProps) {
                 alt={`${user.name}'s image`}
                 className="w-16 h-16 rounded-full"
             />
-            <h3 className="h3-bold">{user.username}</h3>
-            <p className="text-light-3 small-regular">@{user.name}</p>
+            <h3 className="h3-bold">{user.name}</h3>
+            <p className="text-light-3 small-regular">{user.username}</p>
             {user.$id !== currentUser.id ? (
                 <Button
                     variant="default"

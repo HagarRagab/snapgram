@@ -23,6 +23,7 @@ layer(base);
     --color-light-2: #efefef;
     --color-light-3: #7878a3;
     --color-light-4: #5c5c7b;
+    --color-cyan: #0095f6;
 
     --breakpoint-xs: 480px;
 
@@ -324,7 +325,7 @@ layer(base);
 
 /* Button */
 @utility shad-button_primary {
-    @apply bg-primary-500! hover:bg-primary-500! text-light-1! flex! gap-2!;
+    @apply bg-primary-500! hover:bg-primary-600! text-light-1! flex! gap-2!;
 }
 
 @utility shad-button_dark_4 {

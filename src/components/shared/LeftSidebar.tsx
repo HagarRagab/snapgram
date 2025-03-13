@@ -37,7 +37,7 @@ function LeftSidebar() {
                     <div className="flex flex-col">
                         <p className="body-bold">{user.name}</p>
                         <p className="small-regular text-light-3">
-                            @{user.username.replace(/\s/g, "")}
+                            {user.username}
                         </p>
                     </div>
                 </Link>

@@ -1,4 +1,4 @@
-import { INewPost, INewUser, IUpdatePost } from "@/types";
+import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import {
     account,
     appwriteConfig,
@@ -29,7 +29,7 @@ export async function createNewAccount(user: INewUser) {
             email: newAccount.email,
             name: newAccount.name,
             imageUrl: avatarUrl,
-            username: user.username,
+            username: "@" + user.username.replace(/\s/g, ""),
         });
 
         return savedUser;
@@ -125,13 +125,19 @@ export async function getUserById(id?: string) {
 export async function createPost(post: INewPost) {
     try {
         // 1. Store file (image) in backend(appwirte) storage
-        const createdFileRes = await createFile(post.file[0]);
+        const createdFileRes = await createFile(
+            post.file[0],
+            appwriteConfig.storageId
+        );
         if (!createdFileRes) throw Error;
 
         // 2. Get file (image) url in the appwrite storage
-        const createdFileUrl = getFilePreview(createdFileRes.$id);
+        const createdFileUrl = getFilePreview(
+            createdFileRes.$id,
+            appwriteConfig.storageId
+        );
         if (!createdFileUrl) {
-            await deleteFile(createdFileRes.$id);
+            await deleteFile(createdFileRes.$id, appwriteConfig.storageId);
             throw Error;
         }
 
@@ -153,7 +159,7 @@ export async function createPost(post: INewPost) {
             } // data
         );
         if (!newPost) {
-            await deleteFile(createdFileRes.$id);
+            await deleteFile(createdFileRes.$id, appwriteConfig.storageId);
             throw Error;
         }
 
@@ -163,10 +169,10 @@ export async function createPost(post: INewPost) {
     }
 }
 
-async function createFile(file: File) {
+async function createFile(file: File, bucketId: string) {
     try {
         const createdFile = await storage.createFile(
-            appwriteConfig.storageId, // bucketId
+            bucketId, // bucketId
             ID.unique(), // fileId
             file // file
         );
@@ -177,9 +183,9 @@ async function createFile(file: File) {
     }
 }
 
-function getFilePreview(fileId: string) {
+function getFilePreview(fileId: string, bucketId: string) {
     const filePreview = storage.getFilePreview(
-        appwriteConfig.storageId, // bucketId
+        bucketId, // bucketId
         fileId, // fileId
         2000, // width (optional)
         2000, // height (optional)
@@ -189,10 +195,10 @@ function getFilePreview(fileId: string) {
     return filePreview;
 }
 
-export async function deleteFile(fileId: string) {
+export async function deleteFile(fileId: string, bucketId: string) {
     try {
         await storage.deleteFile(
-            appwriteConfig.storageId, // bucketId
+            bucketId, // bucketId
             fileId // fileId
         );
 
@@ -297,14 +303,20 @@ export async function updatePost(updatedPost: IUpdatePost) {
 
         if (hasFileToUpload) {
             // 1. Create file
-            const createdFileRes = await createFile(updatedPost.file[0]);
+            const createdFileRes = await createFile(
+                updatedPost.file[0],
+                appwriteConfig.storageId
+            );
 
             if (!createdFileRes) throw Error;
             // 2. Get file preview
-            const filePreviewUrl = getFilePreview(createdFileRes.$id);
+            const filePreviewUrl = getFilePreview(
+                createdFileRes.$id,
+                appwriteConfig.storageId
+            );
 
             if (!filePreviewUrl) {
-                await deleteFile(createdFileRes.$id);
+                await deleteFile(createdFileRes.$id, appwriteConfig.storageId);
                 throw Error;
             }
 
@@ -325,7 +337,6 @@ export async function updatePost(updatedPost: IUpdatePost) {
                 caption: updatedPost.caption,
                 imageId: image.imageId,
                 imageUrl: image.imageUrl,
-                // file: updatedPost.file,
                 location: updatedPost.location,
                 tags,
             } // data (optional)
@@ -333,12 +344,13 @@ export async function updatePost(updatedPost: IUpdatePost) {
 
         // 4. Check if updating file was failed
         if (!result) {
-            if (hasFileToUpload) await deleteFile(image.imageId);
+            if (hasFileToUpload)
+                await deleteFile(image.imageId, appwriteConfig.storageId);
             throw Error;
         }
 
         // 5. Delete old file from storage
-        await deleteFile(updatedPost.imageId);
+        await deleteFile(updatedPost.imageId, appwriteConfig.storageId);
 
         return result;
     } catch (error) {
@@ -358,7 +370,7 @@ export async function deletePost(postId?: string, imageId?: string) {
 
         if (!status) throw Error;
 
-        await deleteFile(imageId);
+        await deleteFile(imageId, appwriteConfig.storageId);
 
         return { status: "ok" };
     } catch (error) {
@@ -410,5 +422,70 @@ export async function getUsers(pageParam?: number) {
     } catch (error) {
         console.error(error);
         return error;
+    }
+}
+
+export async function updateUser(newInfo: IUpdateUser) {
+    const hasImageToUpload = newInfo.file.length > 0;
+
+    try {
+        let image = {
+            imageId: newInfo.imageId,
+            imageUrl: newInfo.imageUrl,
+        };
+
+        if (hasImageToUpload) {
+            const createdFile = await createFile(
+                newInfo.file[0],
+                appwriteConfig.storageProfilesId
+            );
+
+            if (!createdFile) throw Error;
+
+            const filePreviewUrl = getFilePreview(
+                createdFile.$id,
+                appwriteConfig.storageProfilesId
+            );
+
+            if (!filePreviewUrl) {
+                await deleteFile(
+                    createdFile.$id,
+                    appwriteConfig.storageProfilesId
+                );
+                throw Error;
+            }
+
+            image = {
+                ...image,
+                imageId: createdFile.$id,
+                imageUrl: new URL(filePreviewUrl),
+            };
+        }
+
+        const updatedUser = await databases.updateDocument(
+            appwriteConfig.databaseId, // databaseId
+            appwriteConfig.userCollectionId, // collectionId
+            newInfo.userId, // documentId
+            {
+                name: newInfo.name,
+                bio: newInfo.bio,
+                imageId: image.imageId,
+                imageUrl: image.imageUrl,
+            } // data
+        );
+
+        if (!updatedUser) {
+            if (hasImageToUpload)
+                await deleteFile(
+                    image.imageId,
+                    appwriteConfig.storageProfilesId
+                );
+            throw Error;
+        }
+
+        await deleteFile(newInfo.imageId, appwriteConfig.storageProfilesId);
+        return updatedUser;
+    } catch (error) {
+        console.error(error);
     }
 }
