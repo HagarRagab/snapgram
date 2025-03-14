@@ -1,8 +1,11 @@
 import { Models } from "appwrite";
 import { Link } from "react-router";
 
+import { useGetFollowers } from "@/lib/react-query/queries";
 import { useAuthContext } from "@/context/AuthContext";
-import { Button } from "../ui/button";
+import FollowButton from "./FollowButton";
+import Loader from "./Loader";
+import EditProfileButton from "./EditProfileButton";
 
 type UserCardProps = {
     user: Models.Document;
@@ -10,30 +13,43 @@ type UserCardProps = {
 
 function UserCard({ user }: UserCardProps) {
     const { user: currentUser } = useAuthContext();
+    const { data: followers, isPending: isLoadingFollowers } = useGetFollowers(
+        "followingId",
+        user.$id
+    );
+
+    const displayFollowButton = isLoadingFollowers ? (
+        <Loader />
+    ) : (
+        <FollowButton
+            followerId={currentUser.id}
+            followingId={user.$id}
+            followers={followers?.documents}
+        />
+    );
 
     return (
         <div className="user-card min-w-72">
-            <img
-                src={user.imageUrl}
-                alt={`${user.name}'s image`}
-                className="w-16 h-16 rounded-full"
-            />
-            <h3 className="h3-bold">{user.name}</h3>
-            <p className="text-light-3 small-regular">{user.username}</p>
+            <Link
+                to={`/profile/${user.$id}`}
+                className="flex-center flex-col gap-2"
+            >
+                <img
+                    src={user.imageUrl}
+                    alt={`${user.name}'s image`}
+                    className="w-16 h-16 rounded-full"
+                />
+                <h3 className="h3-bold">{user.name}</h3>
+                <p className="text-light-3 small-regular">{user.username}</p>
+            </Link>
             {user.$id !== currentUser.id ? (
-                <Button
-                    variant="default"
-                    className="bg-primary-500 cursor-pointer hover:bg-primary-600"
-                >
-                    Follow
-                </Button>
+                displayFollowButton
             ) : (
-                <Link
-                    to={`/update-profile/${user.id}`}
-                    className="cursor-pointer py-2 px-4 border-light-1 border-2 rounded-md text-sm font-medium hover:border-light-3"
-                >
-                    Edit profile
-                </Link>
+                <EditProfileButton
+                    loggedInUserId={user.id}
+                    showIcon={false}
+                    style="button_outlined"
+                />
             )}
         </div>
     );

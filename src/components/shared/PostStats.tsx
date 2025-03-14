@@ -9,6 +9,7 @@ import likedIcon from "/assets/icons/liked.svg";
 import saveIcon from "/assets/icons/save.svg";
 import savedIcon from "/assets/icons/saved.svg";
 import Loader from "./Loader";
+import { formatNumbers } from "@/lib/utils";
 
 type PostStatsProp = {
     post?: Models.Document;
@@ -74,7 +75,7 @@ function PostStats({ post, userId }: PostStatsProp) {
                     onClick={handleLikePost}
                 />
                 <span className="small-medium lg:base-medium">
-                    {likes.length}
+                    {formatNumbers(likes.length)}
                 </span>
             </div>
 

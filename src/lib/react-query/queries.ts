@@ -21,6 +21,9 @@ import {
     getUsers,
     getUserById,
     updateUser,
+    followUser,
+    unFollowUser,
+    getFollowersFollowings,
 } from "../appwrite/api";
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { toast } from "sonner";
@@ -97,13 +100,16 @@ export function useLikePost() {
         }) => likePost(postId, likesArray),
         onSuccess: (data) => {
             queryClient.invalidateQueries({
-                queryKey: [
-                    QUERY_KEYS.GET_RECENT_POSTS,
-                    QUERY_KEYS.GET_POSTS,
-                    QUERY_KEYS.GET_CURRENT_USER,
-                    QUERY_KEYS.GET_POST_BY_ID,
-                    data?.$id,
-                ],
+                queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+            });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_POSTS],
+            });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+            });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_POST_BY_ID, data?.$id],
             });
         },
     });
@@ -166,11 +172,13 @@ export function useUpdatePost() {
         onSuccess: () => {
             toast("Post updated successfully.");
             queryClient.invalidateQueries({
-                queryKey: [
-                    QUERY_KEYS.GET_RECENT_POSTS,
-                    QUERY_KEYS.GET_POSTS,
-                    QUERY_KEYS.GET_INFINITE_POSTS,
-                ],
+                queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+            });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_POSTS],
+            });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
             });
         },
         onError: () => toast("Updating post failed. Please try again."),
@@ -241,14 +249,76 @@ export function useUpdateUser() {
         onSuccess: (data) => {
             toast("Your info updated successfully!");
             queryClient.invalidateQueries({
-                queryKey: [
-                    QUERY_KEYS.GET_CURRENT_USER,
-                    QUERY_KEYS.GET_USER_BY_ID,
-                    QUERY_KEYS.GET_USERS,
-                    [QUERY_KEYS.GET_USER_BY_ID, data?.$id],
-                ],
+                queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+            });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_USER_BY_ID],
+            });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_USERS],
+            });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_USER_BY_ID, data?.$id],
             });
         },
         onError: () => toast("Failed to updated your info. Please try again."),
+    });
+}
+
+export function useFollowUser() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({
+            followerId,
+            followingId,
+        }: {
+            followerId: string;
+            followingId?: string;
+        }) => followUser(followerId, followingId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_FOLLOWINGS_BY_USER_ID],
+                exact: false,
+            });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_FOLLOWERS_BY_USER_ID],
+                exact: false,
+            });
+        },
+    });
+}
+
+export function useUnFollowUser() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ documentId }: { documentId?: string }) =>
+            unFollowUser(documentId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_FOLLOWINGS_BY_USER_ID],
+                exact: false,
+            });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_FOLLOWERS_BY_USER_ID],
+                exact: false,
+            });
+        },
+        onError: () => toast("Something went wrong. Please try again later."),
+    });
+}
+
+export function useGetFollowers(query: string, id?: string) {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_FOLLOWERS_BY_USER_ID, id],
+        queryFn: () => getFollowersFollowings(query, id),
+    });
+}
+
+export function useGetFollowings(query: string, id?: string) {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_FOLLOWINGS_BY_USER_ID, id],
+        queryFn: () => getFollowersFollowings(query, id),
     });
 }

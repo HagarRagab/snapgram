@@ -226,7 +226,7 @@ layer(base);
 }
 
 @utility profile-inner_container {
-    @apply flex items-center md:mb-8 xl:items-start gap-8 flex-col relative max-w-5xl w-full;
+    @apply flex items-center md:mb-8 xl:items-start gap-10 flex-col relative max-w-5xl w-full;
 }
 
 @utility profile-tabs {
@@ -325,15 +325,19 @@ layer(base);
 
 /* Button */
 @utility shad-button_primary {
-    @apply bg-primary-500! hover:bg-primary-600! text-light-1! flex! gap-2!;
+    @apply bg-primary-500! hover:bg-primary-600! text-light-1! flex! gap-2! cursor-pointer;
 }
 
 @utility shad-button_dark_4 {
-    @apply h-12! bg-dark-4! px-5! text-light-1! flex! gap-2!;
+    @apply bg-dark-4! hover:bg-dark-3! text-light-1! flex! gap-2! cursor-pointer;
 }
 
 @utility shad-button_ghost {
-    @apply flex! gap-4! items-center! justify-start! hover:bg-transparent! hover:text-white!;
+    @apply flex! gap-4! items-center! justify-start! hover:bg-transparent! hover:text-white! cursor-pointer;
+}
+
+@utility button_outlined {
+    @apply border-2 border-light-1  hover:opacity-80 text-light-1! flex! gap-2! cursor-pointer rounded-lg text-sm font-medium py-2 px-4;
 }
 
 @layer base {

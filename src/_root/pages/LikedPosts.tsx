@@ -1,23 +1,17 @@
-import GridPostList from "@/components/shared/GridPostList";
 import { Models } from "appwrite";
 import { useOutletContext } from "react-router";
 
-type LikedPostsContext = {
+import GridPostList from "@/components/shared/GridPostList";
+
+type LikedPostContext = {
     likedPosts: Models.Document[];
-    showStats: boolean;
-    showUser: boolean;
 };
 
 function LikedPosts() {
-    const { likedPosts, showStats, showUser } =
-        useOutletContext<LikedPostsContext>();
+    const { likedPosts } = useOutletContext<LikedPostContext>();
 
     return (
-        <GridPostList
-            posts={likedPosts}
-            showStats={showStats}
-            showUser={showUser}
-        />
+        <GridPostList posts={likedPosts} showStats={false} showUser={false} />
     );
 }
 

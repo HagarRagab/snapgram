@@ -8,7 +8,6 @@ import SearchResults from "@/components/shared/SearchResults";
 import GridPostList from "@/components/shared/GridPostList";
 import Loader from "@/components/shared/Loader";
 import TopPage from "@/components/shared/TopPage";
-import Filter from "@/components/shared/Filter";
 import searchIcon from "/assets/icons/search.svg";
 
 function Explore() {
@@ -49,11 +48,9 @@ function Explore() {
             </div>
 
             {/* Popular Today Header*/}
-            <div className="flex-between w-full max-w-5xl mt-16 mb-7">
+            <div className="flex-start w-full max-w-5xl mt-16 mb-7">
                 {/* Heading */}
                 <h3 className="body-bold md:h3-bold">Popular Today</h3>
-                {/* Filter */}
-                <Filter />
             </div>
 
             {/* Popular Today Results */}

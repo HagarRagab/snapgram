@@ -240,7 +240,6 @@ export async function likePost(postId: string, likesArray: string[]) {
     }
 }
 
-//!
 export async function savePost(postId: string, userId: string) {
     try {
         const savedPost = await databases.createDocument(
@@ -485,6 +484,55 @@ export async function updateUser(newInfo: IUpdateUser) {
 
         await deleteFile(newInfo.imageId, appwriteConfig.storageProfilesId);
         return updatedUser;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function followUser(followerId: string, followingId?: string) {
+    try {
+        if (!followingId) throw Error;
+        const result = await databases.createDocument(
+            appwriteConfig.databaseId, // databaseId
+            appwriteConfig.followersCollectionId, // collectionId
+            ID.unique(), // documentId
+            { followerId, followingId, followedAt: new Date().toISOString() } // data
+        );
+
+        if (!result) throw Error;
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function unFollowUser(documentId?: string) {
+    try {
+        if (!documentId) throw Error;
+        const deletedDocument = await databases.deleteDocument(
+            appwriteConfig.databaseId, // databaseId
+            appwriteConfig.followersCollectionId, // collectionId
+            documentId // documentId
+        );
+
+        if (!deletedDocument) throw Error;
+        return { status: "ok" };
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function getFollowersFollowings(query: string, id?: string) {
+    try {
+        if (!id) throw Error;
+        const result = await databases.listDocuments(
+            appwriteConfig.databaseId, // databaseId
+            appwriteConfig.followersCollectionId,
+            [Query.equal(query, [id])] // collectionId
+        );
+
+        if (!result) throw Error;
+        return result;
     } catch (error) {
         console.error(error);
     }
