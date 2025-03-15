@@ -3,7 +3,7 @@ import { FileWithPath, useDropzone } from "react-dropzone";
 
 import UpdatePostImage from "./UpdatePostImage";
 import UpdateProfileImage from "./UpdateProfileImage";
-import { convertFileToUrl } from "@/lib/utils";
+import { convertFileToUrl } from "@/utils/utils";
 
 type FileUploaderProps = {
     fieldChange: (file: File[]) => void;

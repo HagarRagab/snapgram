@@ -1,9 +1,13 @@
+import { useNavigate } from "react-router";
 import {
     useInfiniteQuery,
     useMutation,
     useQuery,
     useQueryClient,
 } from "@tanstack/react-query";
+import { Models } from "appwrite";
+
+import { toast } from "sonner";
 import {
     createNewAccount,
     createPost,
@@ -26,9 +30,7 @@ import {
     getFollowersFollowings,
 } from "../appwrite/api";
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
-import { toast } from "sonner";
 import { QUERY_KEYS } from "./queryKeys";
-import { Models } from "appwrite";
 
 export function useCreateAccount() {
     return useMutation({
@@ -44,8 +46,11 @@ export function useSignInAccount() {
 }
 
 export function useSignout() {
+    const navigate = useNavigate();
+
     return useMutation({
         mutationFn: signout,
+        onSuccess: () => navigate(0),
     });
 }
 

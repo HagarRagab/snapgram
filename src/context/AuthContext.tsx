@@ -1,6 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { getCurrentUser } from "@/lib/appwrite/api";
+import { useSignout } from "@/lib/react-query/queries";
 import { IContextType, IUser } from "@/types";
+import { checkTokenExpiration, createExpirationDate } from "@/utils/Auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -29,6 +31,8 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    const { mutate: logout } = useSignout();
+
     const navigate = useNavigate();
 
     const checkAuthUser = async () => {
@@ -46,6 +50,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
                     bio: currentUser.bio,
                 });
                 setIsAuthenticated(true);
+                createExpirationDate();
                 return true;
             }
 
@@ -60,18 +65,29 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         const cookieFallback = localStorage.getItem("cookieFallback");
+        const leftedTime = checkTokenExpiration();
 
         if (
             cookieFallback === "[]" ||
-            cookieFallback === null ||
-            cookieFallback === undefined
+            !cookieFallback ||
+            leftedTime === undefined
         ) {
             navigate("/signin");
             return;
         }
 
+        if (leftedTime === null) return logout();
+
+        const expiredSession = setTimeout(() => {
+            console.log(leftedTime);
+            alert("Session is expired. Please signin again.");
+            logout();
+        }, leftedTime);
+
         checkAuthUser();
-    }, [navigate]);
+
+        return () => clearTimeout(expiredSession);
+    }, [logout]);
 
     const value = {
         user,

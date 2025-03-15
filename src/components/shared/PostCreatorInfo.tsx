@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { Models } from "appwrite";
 
 import imagePlaceholder from "/assets/icons/profile-placeholder.svg";
-import { multiFormatDateString } from "@/lib/utils";
+import { multiFormatDateString } from "@/utils/utils";
 
 type PostCreatorInfoProp = {
     post?: Models.Document;

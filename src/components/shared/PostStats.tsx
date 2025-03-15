@@ -9,7 +9,7 @@ import likedIcon from "/assets/icons/liked.svg";
 import saveIcon from "/assets/icons/save.svg";
 import savedIcon from "/assets/icons/saved.svg";
 import Loader from "./Loader";
-import { formatNumbers } from "@/lib/utils";
+import { formatNumbers } from "@/utils/utils";
 
 type PostStatsProp = {
     post?: Models.Document;

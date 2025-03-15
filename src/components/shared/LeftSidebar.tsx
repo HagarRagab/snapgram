@@ -1,8 +1,7 @@
-import { Link, NavLink, useLocation, useNavigate } from "react-router";
+import { Link, NavLink, useLocation } from "react-router";
 import { useAuthContext } from "@/context/AuthContext";
 import { Button } from "../ui/button";
 import { useSignout } from "@/lib/react-query/queries";
-import { useEffect } from "react";
 import { sidebarLinks } from "@/constants";
 import { INavLink } from "@/types";
 import logo from "/assets/images/logo.svg";
@@ -10,14 +9,9 @@ import logoutIcon from "/assets/icons/logout.svg";
 import placeholderImg from "/assets/icons/profile-placeholder.svg";
 
 function LeftSidebar() {
-    const navigate = useNavigate();
     const location = useLocation();
     const { user } = useAuthContext();
-    const { mutate: signout, isSuccess } = useSignout();
-
-    useEffect(() => {
-        if (isSuccess) navigate(0);
-    }, [isSuccess, navigate]);
+    const { mutate: signout } = useSignout();
 
     return (
         <nav className="leftsidebar">

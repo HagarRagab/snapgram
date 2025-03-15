@@ -17,6 +17,8 @@ function Saved() {
 
             {isLoadingUser ? (
                 <Loader />
+            ) : !savedPosts || !savedPosts.length ? (
+                <p className="text-light-4">No saved posts</p>
             ) : (
                 <GridPostList
                     posts={savedPosts}

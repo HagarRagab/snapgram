@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { Button } from "../ui/button";
 import { useSignout } from "@/lib/react-query/queries";
 import { useAuthContext } from "@/context/AuthContext";
@@ -7,16 +6,9 @@ import logo from "/assets/images/logo.svg";
 import logoutIcon from "/assets/icons/logout.svg";
 
 function Topbar() {
-    const navigate = useNavigate();
-
     const { user } = useAuthContext();
 
-    const { mutate: signout, isSuccess } = useSignout();
-
-    // We used useEffect because isSuccess is an asynchronous state change.
-    useEffect(() => {
-        if (isSuccess) navigate(0);
-    }, [isSuccess, navigate]);
+    const { mutate: signout } = useSignout();
 
     // topbar class it a custom utility in globals.css
     return (

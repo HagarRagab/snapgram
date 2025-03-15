@@ -1,4 +1,4 @@
-import { formatNumbers } from "@/lib/utils";
+import { formatNumbers } from "@/utils/utils";
 import ProfileStat from "./ProfileStat";
 
 type ProfileStatsProps = {
