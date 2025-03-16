@@ -8,7 +8,7 @@
 -   [Tech Stack](#tech-stack)
 -   [Conclusion](#conclusion)
 
-**Live demo** [click here](https://worldwise-travel-tracking-app.netlify.app/)
+**Live demo** [click here](https://snapgram-socail-app.vercel.app/)
 
 ![alt text](website_images/app-design.jpg)
 
