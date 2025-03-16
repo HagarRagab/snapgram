@@ -11,6 +11,7 @@ function PostCaption({ post, classes }: PostCaptionProp) {
             <p>{post?.caption}</p>
             <ul className="flex gap-1 mt-2">
                 {post?.tags.length > 0 &&
+                    post?.tags?.join("") !== "" &&
                     post?.tags.map((tag: string, index: number) => (
                         <li
                             key={tag + index}

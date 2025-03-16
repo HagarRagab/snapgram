@@ -1,10 +1,11 @@
+import { InfiniteData } from "@tanstack/react-query";
 import { Models } from "appwrite";
+
 import Loader from "./Loader";
 import GridPostList from "./GridPostList";
-import { appwriteInfiniteData } from "@/types";
 
 type SearchResultsProps = {
-    searchPosts?: appwriteInfiniteData | Models.Document;
+    searchPosts: InfiniteData<Models.DocumentList<Models.Document>> | undefined;
     isLoadingSearchResults: boolean;
 };
 

@@ -22,8 +22,8 @@ function PostStats({ post, userId }: PostStatsProp) {
     const { mutate: savePost, isPending: isSaving } = useSavePost();
     const { mutate: unSavePost, isPending: isUnSaving } = useUnSavePost();
 
-    const savedPostRecord = currentUser?.save.find(
-        (record: Models.Document) => record.post.$id === post?.$id
+    const savedPostRecord = currentUser?.save?.find(
+        (record: Models.Document) => record?.post?.$id === post?.$id
     );
     const [likes, setLikes] = useState(() =>
         post?.likes.map((user: Models.Document) => user.$id)
@@ -53,7 +53,7 @@ function PostStats({ post, userId }: PostStatsProp) {
         e.stopPropagation();
 
         if (isSaved) {
-            unSavePost({ savedRecordId: savedPostRecord.$id });
+            unSavePost({ savedRecordId: savedPostRecord?.$id });
             setIsSaved(false);
         } else {
             savePost({ postId: post?.$id || "", userId });

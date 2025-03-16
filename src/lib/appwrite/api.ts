@@ -7,6 +7,7 @@ import {
     storage,
 } from "./appwrite";
 import { ID, ImageGravity, Query } from "appwrite";
+import { formatName } from "@/utils/utils";
 
 //* Steps to sign up
 // 1. create new account  2. save new account in database 3. logging in > creating session
@@ -29,7 +30,7 @@ export async function createNewAccount(user: INewUser) {
             email: newAccount.email,
             name: newAccount.name,
             imageUrl: avatarUrl,
-            username: "@" + user.username.replace(/\s/g, ""),
+            username: formatName(user.username),
         });
 
         return savedUser;
@@ -345,12 +346,14 @@ export async function updatePost(updatedPost: IUpdatePost) {
         // 4. Check if updating file was failed
         if (!result) {
             if (hasFileToUpload)
+                // Delete new file that has been recently uploaded
                 await deleteFile(image.imageId, appwriteConfig.storageId);
             throw Error;
         }
 
         // 5. Delete old file from storage
-        await deleteFile(updatedPost.imageId, appwriteConfig.storageId);
+        if (hasFileToUpload)
+            await deleteFile(updatedPost.imageId, appwriteConfig.storageId);
 
         return result;
     } catch (error) {
@@ -403,6 +406,7 @@ export async function getPosts(
         return posts;
     } catch (error) {
         console.error(error);
+        throw Error;
     }
 }
 
@@ -421,7 +425,7 @@ export async function getUsers(pageParam?: number) {
         return users;
     } catch (error) {
         console.error(error);
-        return error;
+        throw error;
     }
 }
 

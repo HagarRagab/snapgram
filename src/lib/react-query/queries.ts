@@ -5,7 +5,6 @@ import {
     useQuery,
     useQueryClient,
 } from "@tanstack/react-query";
-import { Models } from "appwrite";
 
 import { toast } from "sonner";
 import {
@@ -192,6 +191,7 @@ export function useUpdatePost() {
 
 export function useDeletePost() {
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
     return useMutation({
         mutationFn: ({
@@ -205,7 +205,11 @@ export function useDeletePost() {
             queryClient.invalidateQueries({
                 queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
             });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
+            });
             toast("Post deleted successfully.");
+            navigate("/");
         },
         onError: () => toast("Post deletion failed. Please try again."),
     });
@@ -224,12 +228,13 @@ export function useGetPosts({
             : [QUERY_KEYS.GET_INFINITE_POSTS],
         queryFn: ({ pageParam }: { pageParam?: number }) =>
             getPosts(limits, searchTerm, pageParam),
-        getNextPageParam: (lastPage: Models.Document | undefined) => {
+        getNextPageParam: (lastPage: any) => {
             // Note that getInfinitePosts returns (e.g., { documents: Post[], total: number })
             if (lastPage?.documents?.length === 0) return null;
             const lastPost = lastPage?.documents?.at(-1);
             return lastPost?.$id;
         },
+        initialPageParam: 0,
     });
 }
 
@@ -237,11 +242,12 @@ export function useGetUsers() {
     return useInfiniteQuery({
         queryKey: [QUERY_KEYS.GET_USERS],
         queryFn: ({ pageParam }: { pageParam?: number }) => getUsers(pageParam),
-        getNextPageParam: (lastPage: Models.Document | undefined) => {
+        getNextPageParam: (lastPage: any) => {
             if (lastPage?.documents.length === 0) return null;
             const lastPost = lastPage?.documents?.at(-1);
             return lastPost.$id;
         },
+        initialPageParam: 0,
     });
 }
 

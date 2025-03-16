@@ -9,6 +9,7 @@ import GridPostList from "@/components/shared/GridPostList";
 import Loader from "@/components/shared/Loader";
 import TopPage from "@/components/shared/TopPage";
 import searchIcon from "/assets/icons/search.svg";
+import PageError from "@/components/shared/PageError";
 
 function Explore() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -29,6 +30,9 @@ function Explore() {
     }, [inView, searchTerm, fetchNextPage]);
 
     const isUserSearching = !!searchTerm.trim();
+    const shouldShowPosts = !posts || posts?.pages[0]?.documents.length !== 0;
+
+    if (isLoadingPosts) return <Loader />;
 
     return (
         <div className="explore-container">
@@ -54,10 +58,8 @@ function Explore() {
             </div>
 
             {/* Popular Today Results */}
-            {!posts && isLoadingPosts ? (
-                <div className="flex-center w-full h-full">
-                    <Loader />
-                </div>
+            {!shouldShowPosts && !isLoadingPosts ? (
+                <PageError>No found posts</PageError>
             ) : (
                 <>
                     <div>

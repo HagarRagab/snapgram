@@ -6,6 +6,7 @@ import { useGetPosts } from "@/lib/react-query/queries";
 import Loader from "../../components/shared/Loader";
 import PostCard from "../../components/shared/PostCard";
 import TopPage from "@/components/shared/TopPage";
+import PageError from "@/components/shared/PageError";
 
 function Home() {
     const {
@@ -22,13 +23,17 @@ function Home() {
         if (inView) fetchNextPage();
     }, [inView, fetchNextPage]);
 
+    const shouldShowPosts = !posts || posts?.pages[0]?.documents.length !== 0;
+
+    if (isPostsLoading) return <Loader />;
+
     return (
         <div className="flex flex-1">
             <div className="home-container">
                 <div className="home-posts">
                     <TopPage>Home Feed</TopPage>
-                    {isPostsLoading && !posts ? (
-                        <Loader />
+                    {!isPostsLoading && !shouldShowPosts ? (
+                        <PageError>No found posts</PageError>
                     ) : (
                         <ul className="flex flex-1 flex-col w-full gap-9">
                             {posts?.pages?.map((item) => {

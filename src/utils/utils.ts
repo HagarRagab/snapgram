@@ -58,3 +58,5 @@ export const formatNumbers = (num: number) =>
         notation: "compact",
         compactDisplay: "short",
     }).format(num);
+
+export const formatName = (name: string) => "@" + name.replace(/\s/g, "");

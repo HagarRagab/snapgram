@@ -16,7 +16,7 @@ function Profile() {
 
     const isLoggedInUserProfile = id === loggedInUser.id;
 
-    if (isLoadingLoggedInUser) return <Loader />;
+    if (isLoadingLoggedInUser || isLoadingUser) return <Loader />;
 
     return (
         <div className="profile-container">
@@ -30,18 +30,14 @@ function Profile() {
                 </div>
 
                 {/* Profile Posts */}
-                {isLoadingUser ? (
-                    <Loader />
-                ) : (
-                    <div>
-                        <Outlet
-                            context={{
-                                likedPosts: user?.liked,
-                                posts: user?.posts,
-                            }}
-                        />
-                    </div>
-                )}
+                <div>
+                    <Outlet
+                        context={{
+                            likedPosts: user?.liked,
+                            posts: user?.posts,
+                        }}
+                    />
+                </div>
             </div>
         </div>
     );

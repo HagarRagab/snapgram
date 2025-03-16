@@ -2,6 +2,7 @@ import { Models } from "appwrite";
 import { useOutletContext } from "react-router";
 
 import GridPostList from "@/components/shared/GridPostList";
+import PageError from "@/components/shared/PageError";
 
 type LikedPostContext = {
     likedPosts: Models.Document[];
@@ -10,7 +11,9 @@ type LikedPostContext = {
 function LikedPosts() {
     const { likedPosts } = useOutletContext<LikedPostContext>();
 
-    return (
+    return !likedPosts.length ? (
+        <PageError>No Liked posts</PageError>
+    ) : (
         <GridPostList posts={likedPosts} showStats={false} showUser={false} />
     );
 }

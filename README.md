@@ -38,51 +38,96 @@ Built with developer best practices, Snapgram integrates **React Hook Form** wit
 ### **Project Structure:**
 
 ```
-- data
-  - cities.json          # Sample data for cities and countries
-- index.html             # Root HTML file
-- package-lock.json
-- package.json
+- index.html
 - public
+  - assets
+    - icons
+    - images
 - README.md
 - src
-  ├── App.jsx            # Main application component
-  ├── components         # Reusable UI components
-  │   ├── AppNav.jsx
-  │   ├── BackButton.jsx
-  │   ├── Button.jsx
-  │   ├── City.jsx
-  │   ├── CityItem.jsx
-  │   ├── CityList.jsx
-  │   ├── CountryItem.jsx
-  │   ├── CountryList.jsx
-  │   ├── Footer.jsx
-  │   ├── Form.jsx
-  │   ├── Logo.jsx
-  │   ├── Map.jsx
-  │   ├── Message.jsx
-  │   ├── PageNav.jsx
-  │   ├── Sidebar.jsx
-  │   ├── Spinner.jsx
-  │   ├── SpinnerFullPage.jsx
-  │   ├── User.jsx
-  │   ├── *.module.css    # CSS Modules for component styles
-  ├── contexts           # Context API for global state management
-  │   ├── CitiesContext.jsx
-  │   ├── FakeAuthContext.jsx
-  ├── hooks              # Custom hooks for reusable logic
-  │   ├── useGeoLocation.js
-  │   ├── useUrlPosition.js
-  ├── index.css          # Global CSS styles
-  ├── main.jsx           # Application entry point
-  ├── pages              # Page components for routing
-  │   ├── AppLayout.jsx
-  │   ├── Homepage.jsx
-  │   ├── Login.jsx
-  │   ├── PageNotFound.jsx
-  │   ├── Pricing.jsx
-  │   ├── Product.jsx
-  │   ├── ProtectedRoute.jsx
+  - App.tsx
+  - components
+    - forms
+      - PostForm.tsx
+      - ProfileForm.tsx
+    - shared
+      - Bottombar.tsx
+      - EditProfileButton.tsx
+      - FileUploader.tsx
+      - FollowButton.tsx
+      - GridPostList.tsx
+      - GridUserList.tsx
+      - LeftSidebar.tsx
+      - Loader.tsx
+      - LoaderFullPage.tsx
+      - PageError.tsx
+      - PostCaption.tsx
+      - PostCard.tsx
+      - PostCreatorInfo.tsx
+      - PostStats.tsx
+      - ProfileInfo.tsx
+      - ProfileStat.tsx
+      - ProfileStats.tsx
+      - ProfileTab.tsx
+      - ProfileTabs.tsx
+      - SearchResults.tsx
+      - Topbar.tsx
+      - TopPage.tsx
+      - UpdatePostImage.tsx
+      - UpdateProfileImage.tsx
+      - UserCard.tsx
+    - ui
+      - button.tsx
+      - form.tsx
+      - input.tsx
+      - label.tsx
+      - sonner.tsx
+      - textarea.tsx
+  - constants
+    - index.ts
+  - context
+    - AuthContext.tsx
+  - globals.css
+  - hooks
+    - useDebounce.ts
+  - lib
+    - appwrite
+      - api.ts
+      - appwrite.ts
+    - react-query
+      - queries.ts
+      - queryKeys.ts
+    - validation
+      - index.ts
+  - main.tsx
+  - types
+    - index.ts
+  - utils
+    - Auth.ts
+    - utils.ts
+  - vite-env.d.ts
+  - _auth
+    - AuthLayout.tsx
+    - forms
+      - SigninForm.tsx
+      - SingupForm.tsx
+  - _root
+    - pages
+      - AllUsers.tsx
+      - CreatePost.tsx
+      - EditPost.tsx
+      - Explore.tsx
+      - Home.tsx
+      - index.ts
+      - LikedPosts.tsx
+      - PageNotFound.tsx
+      - PostDetails.tsx
+      - Profile.tsx
+      - ProfilePosts.tsx
+      - ProtectedRoute.tsx
+      - Saved.tsx
+      - UpdateProfile.tsx
+    - RootLayout.tsx
 ```
 
 ---

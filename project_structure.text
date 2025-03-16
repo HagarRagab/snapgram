@@ -3,6 +3,7 @@
   - assets
     - icons
     - images
+- README.md
 - src
   - App.tsx
   - components
@@ -18,6 +19,8 @@
       - GridUserList.tsx
       - LeftSidebar.tsx
       - Loader.tsx
+      - LoaderFullPage.tsx
+      - PageError.tsx
       - PostCaption.tsx
       - PostCard.tsx
       - PostCreatorInfo.tsx
@@ -62,6 +65,7 @@
   - utils
     - Auth.ts
     - utils.ts
+  - vite-env.d.ts
   - _auth
     - AuthLayout.tsx
     - forms
@@ -76,6 +80,7 @@
       - Home.tsx
       - index.ts
       - LikedPosts.tsx
+      - PageNotFound.tsx
       - PostDetails.tsx
       - Profile.tsx
       - ProfilePosts.tsx

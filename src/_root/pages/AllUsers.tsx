@@ -21,6 +21,8 @@ function AllUsers() {
         if (inView) fetchNextPage();
     }, [fetchNextPage, inView]);
 
+    if (isLoadingUsers) return <Loader />;
+
     return (
         <div className="common-container">
             <TopPage icon={peopleIcon} alt="people">
@@ -28,22 +30,12 @@ function AllUsers() {
             </TopPage>
 
             <div>
-                {isLoadingUsers ? (
-                    <Loader />
-                ) : (
-                    <div>
-                        <GridUserList users={users} />
+                <GridUserList users={users?.pages} />
 
-                        {hasNextPage ? (
-                            <div ref={ref}>
-                                {isFetchingNextPage && <Loader />}
-                            </div>
-                        ) : (
-                            <p className="text-light-4 text-center">
-                                - End of users -
-                            </p>
-                        )}
-                    </div>
+                {hasNextPage ? (
+                    <div ref={ref}>{isFetchingNextPage && <Loader />}</div>
+                ) : (
+                    <p className="text-light-4 text-center">- End of users -</p>
                 )}
             </div>
         </div>

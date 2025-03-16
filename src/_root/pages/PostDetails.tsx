@@ -20,7 +20,6 @@ function PostDetails() {
 
     const handleDeletePost = () => {
         deletePost({ postId: post?.$id, imageId: post?.imageId });
-        navigate(-1);
     };
 
     return (
