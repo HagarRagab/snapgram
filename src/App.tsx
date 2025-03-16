@@ -1,8 +1,9 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router";
 import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
+import LoaderFullPage from "./components/shared/LoaderFullPage";
 // import AuthLayout from "./_auth/AuthLayout";
 // import SigninForm from "./_auth/forms/SigninForm";
 // import SingupForm from "./_auth/forms/SingupForm";
@@ -44,40 +45,42 @@ const PageNotFound = lazy(() => import("./_root/pages/PageNotFound"));
 function App() {
     return (
         <main className="flex h-screen">
-            <Routes>
-                {/* Public Routes */}
-                <Route element={<AuthLayout />}>
-                    <Route path="/signin" element={<SigninForm />} />
-                    <Route path="/signup" element={<SingupForm />} />
-                </Route>
+            <Suspense fallback={<LoaderFullPage />}>
+                <Routes>
+                    {/* Public Routes */}
+                    <Route element={<AuthLayout />}>
+                        <Route path="/signin" element={<SigninForm />} />
+                        <Route path="/signup" element={<SingupForm />} />
+                    </Route>
 
-                {/* Private Routes */}
-                <Route element={<RootLayout />}>
-                    <Route index element={<Home />} />
-                    <Route path="/explore" element={<Explore />} />
-                    <Route path="/saved" element={<Saved />} />
-                    <Route path="/all-users" element={<AllUsers />} />
-                    <Route path="/create-post" element={<CreatePost />} />
-                    <Route path="/update-post/:id" element={<EditPost />} />
-                    <Route path="/posts/:id" element={<PostDetails />} />
-                    <Route path="/profile/:id" element={<Profile />}>
-                        <Route index element={<ProfilePosts />} />
+                    {/* Private Routes */}
+                    <Route element={<RootLayout />}>
+                        <Route index element={<Home />} />
+                        <Route path="/explore" element={<Explore />} />
+                        <Route path="/saved" element={<Saved />} />
+                        <Route path="/all-users" element={<AllUsers />} />
+                        <Route path="/create-post" element={<CreatePost />} />
+                        <Route path="/update-post/:id" element={<EditPost />} />
+                        <Route path="/posts/:id" element={<PostDetails />} />
+                        <Route path="/profile/:id" element={<Profile />}>
+                            <Route index element={<ProfilePosts />} />
+                            <Route
+                                path="/profile/:id/liked-posts"
+                                element={
+                                    <ProtectedRoute>
+                                        <LikedPosts />
+                                    </ProtectedRoute>
+                                }
+                            />
+                        </Route>
                         <Route
-                            path="/profile/:id/liked-posts"
-                            element={
-                                <ProtectedRoute>
-                                    <LikedPosts />
-                                </ProtectedRoute>
-                            }
+                            path="/update-profile/:id"
+                            element={<UpdateProfile />}
                         />
                     </Route>
-                    <Route
-                        path="/update-profile/:id"
-                        element={<UpdateProfile />}
-                    />
-                </Route>
-                <Route path="*" element={<PageNotFound />} />
-            </Routes>
+                    <Route path="*" element={<PageNotFound />} />
+                </Routes>
+            </Suspense>
 
             <Toaster />
         </main>
