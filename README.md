@@ -8,7 +8,7 @@
 -   [Tech Stack](#tech-stack)
 -   [Conclusion](#conclusion)
 
-**Live demo** [click here](https://snapgram-sociall-app.vercel.app/)
+**Live demo** [click here](https://snapgram-nine-ochre.vercel.app/)
 
 ![alt text](website_images/app-design.jpg)
 

@@ -13,7 +13,6 @@ function LeftSidebar() {
     const { user } = useAuthContext();
     const { mutate: signout } = useSignout();
 
-    console.log(user.imageUrl);
     const userImageUrl = `${
         import.meta.env.VITE_APPWRITE_URL
     }/avatars/initials?name=${user?.name}&project=${
