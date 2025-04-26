@@ -15,6 +15,12 @@ type PostCardProp = {
 function PostCard({ post }: PostCardProp) {
     const { user } = useAuthContext();
 
+    const postImageUrl = `${
+        import.meta.env.VITE_APPWRITE_URL
+    }/storage/buckets/${import.meta.env.VITE_APPWRITE_STORAGE_ID}/files/${
+        post.imageId
+    }/view?project=${import.meta.env.VITE_APPWRITE_PROJECT_ID}`;
+
     return (
         <div className="post-card">
             <div className="flex-between">
@@ -42,7 +48,7 @@ function PostCard({ post }: PostCardProp) {
                 <PostCaption post={post} />
                 {/* Post image */}
                 <img
-                    src={post.imageUrl || imagePlaceholder}
+                    src={postImageUrl || imagePlaceholder}
                     alt={post.caption}
                     className="post-card_img"
                 />

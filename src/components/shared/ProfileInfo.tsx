@@ -33,12 +33,18 @@ function ProfileInfo({ loggedInUser }: ProfileInfoProps) {
 
     if (isLoadingFollowings || isLoadingFollowers) return <Loader />;
 
+    const userImageUrl = `${
+        import.meta.env.VITE_APPWRITE_URL
+    }/avatars/initials?name=${user?.imageUrl}&project=${
+        import.meta.env.VITE_APPWRITE_PROJECT_ID
+    }`;
+
     return (
         <div className="flex gap-6">
             <img
-                src={user?.imageUrl || placeholderImg}
+                src={userImageUrl || placeholderImg}
                 alt="profile"
-                className="w-20 h-20 rounded-full md:w-38 md:h-38"
+                className="w-20 h-20 rounded-full md:w-38 md:h-38 object-cover"
             />
 
             {/* User profile info */}

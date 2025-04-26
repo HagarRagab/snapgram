@@ -13,6 +13,13 @@ function LeftSidebar() {
     const { user } = useAuthContext();
     const { mutate: signout } = useSignout();
 
+    console.log(user.imageUrl);
+    const userImageUrl = `${
+        import.meta.env.VITE_APPWRITE_URL
+    }/avatars/initials?name=${user?.name}&project=${
+        import.meta.env.VITE_APPWRITE_PROJECT_ID
+    }`;
+
     return (
         <nav className="leftsidebar">
             <div className="flex flex-col gap-10">
@@ -24,7 +31,7 @@ function LeftSidebar() {
                     className="flex gap-3 items-center"
                 >
                     <img
-                        src={user.imageUrl || placeholderImg}
+                        src={userImageUrl || placeholderImg}
                         alt="profile"
                         className="w-8 h-8 rounded-full"
                     />

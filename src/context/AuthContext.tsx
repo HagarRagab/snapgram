@@ -79,7 +79,6 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         if (leftedTime === null) return logout();
 
         const expiredSession = setTimeout(() => {
-            console.log(leftedTime);
             alert("Session is expired. Please signin again.");
             logout();
         }, leftedTime);

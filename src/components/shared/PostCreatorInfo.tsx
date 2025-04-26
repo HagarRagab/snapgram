@@ -9,11 +9,17 @@ type PostCreatorInfoProp = {
 };
 
 function PostCreatorInfo({ post }: PostCreatorInfoProp) {
+    const postCreatorImageUrl = `${
+        import.meta.env.VITE_APPWRITE_URL
+    }/avatars/initials?name=${post?.creator.name}&project=${
+        import.meta.env.VITE_APPWRITE_PROJECT_ID
+    }`;
+
     return (
         <div className="flex items-center gap-3">
             <Link to={`/profile/${post?.creator?.$id}`}>
                 <img
-                    src={post?.creator?.imageUrl || imagePlaceholder}
+                    src={postCreatorImageUrl || imagePlaceholder}
                     alt="creator"
                     className="rounded-full w-12 lg:h-12"
                 />
