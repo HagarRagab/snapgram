@@ -1,36 +1,35 @@
-import { useNavigate } from "react-router";
 import {
     useInfiniteQuery,
     useMutation,
     useQuery,
     useQueryClient,
 } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
 
+import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { toast } from "sonner";
 import {
     createNewAccount,
     createPost,
+    deletePost,
+    followUser,
+    getCurrentUser,
+    getFollowersFollowings,
+    getPostById,
+    getPosts,
     getRecentPosts,
+    getUserById,
+    getUsers,
     likePost,
     savePost,
-    unSavePost,
     signInAccount,
     signout,
-    getCurrentUser,
-    getPostById,
-    updatePost,
-    deletePost,
-    getPosts,
-    getUsers,
-    getUserById,
-    updateUser,
-    followUser,
     unFollowUser,
-    getFollowersFollowings,
+    unSavePost,
+    updatePost,
+    updateUser,
 } from "../appwrite/api";
-import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { QUERY_KEYS } from "./queryKeys";
-import { promise } from "zod";
 
 export function useCreateAccount() {
     return useMutation({
