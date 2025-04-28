@@ -10,6 +10,7 @@ import editIcon from "/assets/icons/edit.svg";
 import deleteIcon from "/assets/icons/delete.svg";
 import PostCaption from "@/components/shared/PostCaption";
 import PostStats from "@/components/shared/PostStats";
+import { generateImageUrl } from "@/utils/utils";
 
 function PostDetails() {
     const navigate = useNavigate();
@@ -43,7 +44,7 @@ function PostDetails() {
                 <div className="post_details-card">
                     {/* Post image */}
                     <img
-                        src={post?.imageUrl}
+                        src={generateImageUrl(post?.imageId, "media")}
                         alt="post"
                         className="post_details-img"
                     />

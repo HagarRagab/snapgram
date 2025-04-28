@@ -1,10 +1,9 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Models } from "appwrite";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Models } from "appwrite";
 
-import { PostValidationSchema } from "@/lib/validation";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -14,11 +13,13 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { Textarea } from "../ui/textarea";
+import { useAuthContext } from "@/context/AuthContext";
+import { useCreatePost, useUpdatePost } from "@/lib/react-query/queries";
+import { PostValidationSchema } from "@/lib/validation";
+import { generateImageUrl } from "@/utils/utils";
 import FileUploader from "../shared/FileUploader";
 import { Input } from "../ui/input";
-import { useCreatePost, useUpdatePost } from "@/lib/react-query/queries";
-import { useAuthContext } from "@/context/AuthContext";
+import { Textarea } from "../ui/textarea";
 
 type PostFormProp = {
     // This post prop exists only when updating post
@@ -111,7 +112,10 @@ function PostForm({ post, action }: PostFormProp) {
                             <FormControl>
                                 <FileUploader
                                     fieldChange={field.onChange}
-                                    imageUrl={post?.imageUrl} // This only for updating post
+                                    imageUrl={generateImageUrl(
+                                        post?.imageId,
+                                        "media"
+                                    )}
                                     type="post"
                                 />
                             </FormControl>

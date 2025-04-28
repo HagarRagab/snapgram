@@ -19,9 +19,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import FileUploader from "@/components/shared/FileUploader";
+import { defaultProfileImageUrl, generateImageUrl } from "@/utils/utils";
 
 type ProfileFormProps = {
-    // user: IUser;
     user: Models.Document;
 };
 
@@ -61,6 +61,7 @@ function ProfileForm({ user }: ProfileFormProps) {
         setUser({
             ...currentUser,
             name: updatedUser?.name,
+            imageId: updatedUser?.imageId,
             imageUrl: updatedUser?.imageUrl,
             bio: updatedUser?.bio,
         });
@@ -82,7 +83,13 @@ function ProfileForm({ user }: ProfileFormProps) {
                             <FormControl>
                                 <FileUploader
                                     fieldChange={field.onChange}
-                                    imageUrl={user?.imageUrl}
+                                    imageUrl={generateImageUrl(
+                                        user?.imageId,
+                                        "profiles"
+                                    )}
+                                    fallbackImageUrl={defaultProfileImageUrl(
+                                        user?.name
+                                    )}
                                     type="profile"
                                 />
                             </FormControl>

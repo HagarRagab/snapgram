@@ -30,6 +30,7 @@ import {
 } from "../appwrite/api";
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { QUERY_KEYS } from "./queryKeys";
+import { promise } from "zod";
 
 export function useCreateAccount() {
     return useMutation({
@@ -257,20 +258,22 @@ export function useUpdateUser() {
     return useMutation({
         mutationFn: ({ newInfo }: { newInfo: IUpdateUser }) =>
             updateUser(newInfo),
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
             toast("Your info updated successfully!");
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.GET_CURRENT_USER],
-            });
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.GET_USER_BY_ID],
-            });
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.GET_USERS],
-            });
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.GET_USER_BY_ID, data?.$id],
-            });
+            await Promise.all([
+                queryClient.invalidateQueries({
+                    queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+                }),
+                queryClient.invalidateQueries({
+                    queryKey: [QUERY_KEYS.GET_USER_BY_ID],
+                }),
+                queryClient.invalidateQueries({
+                    queryKey: [QUERY_KEYS.GET_USERS],
+                }),
+                queryClient.invalidateQueries({
+                    queryKey: [QUERY_KEYS.GET_USER_BY_ID, data?.$id],
+                }),
+            ]);
         },
         onError: () => toast("Failed to updated your info. Please try again."),
     });

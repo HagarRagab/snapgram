@@ -1,23 +1,20 @@
 import { Link, NavLink, useLocation } from "react-router";
-import { useAuthContext } from "@/context/AuthContext";
-import { Button } from "../ui/button";
-import { useSignout } from "@/lib/react-query/queries";
+
 import { sidebarLinks } from "@/constants";
+import { useAuthContext } from "@/context/AuthContext";
+import { useSignout } from "@/lib/react-query/queries";
 import { INavLink } from "@/types";
-import logo from "/assets/images/logo.svg";
+import { defaultProfileImageUrl, generateImageUrl } from "@/utils/utils";
+import { Button } from "../ui/button";
+import ProfileImage from "./ProfileImage";
 import logoutIcon from "/assets/icons/logout.svg";
-import placeholderImg from "/assets/icons/profile-placeholder.svg";
+import logo from "/assets/images/logo.svg";
+import Loader from "./Loader";
 
 function LeftSidebar() {
     const location = useLocation();
-    const { user } = useAuthContext();
+    const { user, isLoading } = useAuthContext();
     const { mutate: signout } = useSignout();
-
-    const userImageUrl = `${
-        import.meta.env.VITE_APPWRITE_URL
-    }/avatars/initials?name=${user?.name}&project=${
-        import.meta.env.VITE_APPWRITE_PROJECT_ID
-    }`;
 
     return (
         <nav className="leftsidebar">
@@ -25,22 +22,31 @@ function LeftSidebar() {
                 <Link to="/">
                     <img src={logo} alt="logo" width={170} height={36} />
                 </Link>
-                <Link
-                    to={`/profile/${user.id}`}
-                    className="flex gap-3 items-center"
-                >
-                    <img
-                        src={userImageUrl || placeholderImg}
-                        alt="profile"
-                        className="w-8 h-8 rounded-full"
-                    />
-                    <div className="flex flex-col">
-                        <p className="body-bold">{user.name}</p>
-                        <p className="small-regular text-light-3">
-                            {user.username}
-                        </p>
-                    </div>
-                </Link>
+                {isLoading ? (
+                    <Loader />
+                ) : (
+                    <Link
+                        to={`/profile/${user.id}`}
+                        className="flex gap-3 items-center"
+                    >
+                        <ProfileImage
+                            profileImage={generateImageUrl(
+                                user.imageId,
+                                "profiles"
+                            )}
+                            fallbackProfileImage={defaultProfileImageUrl(
+                                user.name
+                            )}
+                            size="w-8 h-8"
+                        />
+                        <div className="flex flex-col">
+                            <p className="body-bold">{user.name}</p>
+                            <p className="small-regular text-light-3">
+                                {user.username}
+                            </p>
+                        </div>
+                    </Link>
+                )}
             </div>
 
             <ul className="flex flex-col gap-3 flex-1">

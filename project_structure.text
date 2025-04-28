@@ -1,8 +1,115 @@
+- .env.local
+- .gitignore
+- components.json
+- dist
+  - assets
+    - AllUsers-Cpt2Nz8A.js
+    - AuthLayout-CBFxfAVU.js
+    - button-DQNuvlup.js
+    - CreatePost-DYMOlz0g.js
+    - edit-DfZC10AD.js
+    - EditPost-C-IuGiXO.js
+    - EditProfileButton-DafXqnXj.js
+    - Explore-CmwJxhTS.js
+    - FileUploader-I2CGBLTq.js
+    - GridPostList-DJAY3861.js
+    - Home-B0C5qxt7.js
+    - icons
+      - add-post.svg
+      - back.svg
+      - bookmark.svg
+      - chat.svg
+      - delete.svg
+      - edit.svg
+      - favicon.ico
+      - file-upload.svg
+      - filter.svg
+      - follow.svg
+      - gallery-add.svg
+      - google.svg
+      - home.svg
+      - like.svg
+      - liked.svg
+      - loader.svg
+      - logout.svg
+      - people.svg
+      - posts.svg
+      - profile-placeholder.svg
+      - save.svg
+      - saved.svg
+      - search.svg
+      - share.svg
+      - wallpaper.svg
+      - warning.svg
+    - images
+      - logo.svg
+      - profile.png
+      - side-img.svg
+    - index-30TKQ5gS.js
+    - index-BBk31NwH.js
+    - index-BsI1QI9p.js
+    - index-DK_6Jk_l.css
+    - input-B5ImpzRo.js
+    - like-B09b-2En.js
+    - LikedPosts-v74_Jgmi.js
+    - Loader-CPDy5Nod.js
+    - PageError-D6qx74Dc.js
+    - PageNotFound-voK653Q9.js
+    - PostCaption-D--pA46l.js
+    - PostDetails-BF9mxTeO.js
+    - PostForm-Bvco3Le3.js
+    - PostStats-ieCykCfS.js
+    - Profile-Cx06SrVg.js
+    - profile-placeholder-DQnA-PXW.js
+    - ProfilePosts-BzgCvsHo.js
+    - ProtectedRoute-CTE_co24.js
+    - RootLayout-DeLVTE1f.js
+    - Saved-BThnmxaF.js
+    - SigninForm-DPEsSEv8.js
+    - SingupForm-Dhy5WIF-.js
+    - TopPage-Ba7vupWs.js
+    - UpdateProfile-DUD8XjuN.js
+  - index.html
+- eslint.config.js
 - index.html
+- NOTES.md
+- package-lock.json
+- package.json
+- project_structure.text
 - public
   - assets
     - icons
+      - add-post.svg
+      - back.svg
+      - bookmark.svg
+      - chat.svg
+      - delete.svg
+      - edit.svg
+      - favicon.ico
+      - file-upload.svg
+      - filter.svg
+      - follow.svg
+      - gallery-add.svg
+      - google.svg
+      - home.svg
+      - like.svg
+      - liked.svg
+      - loader.svg
+      - logout.svg
+      - people.svg
+      - posts.svg
+      - profile-placeholder.svg
+      - save.svg
+      - saved.svg
+      - search.svg
+      - share.svg
+      - wallpaper.svg
+      - warning.svg
     - images
+      - logo.svg
+      - post-placeholder-image.webp
+      - profile.png
+      - side-img.svg
 - README.md
 - src
   - App.tsx
@@ -24,17 +131,19 @@
       - PostCaption.tsx
       - PostCard.tsx
       - PostCreatorInfo.tsx
+      - PostList.tsx
       - PostStats.tsx
+      - ProfileImage.tsx
       - ProfileInfo.tsx
       - ProfileStat.tsx
       - ProfileStats.tsx
       - ProfileTab.tsx
       - ProfileTabs.tsx
       - SearchResults.tsx
+      - SpinnerFullPage.tsx
       - Topbar.tsx
       - TopPage.tsx
       - UpdatePostImage.tsx
-      - UpdateProfileImage.tsx
       - UserCard.tsx
     - ui
       - button.tsx
@@ -88,3 +197,16 @@
       - Saved.tsx
       - UpdateProfile.tsx
     - RootLayout.tsx
+- tsconfig.app.json
+- tsconfig.json
+- tsconfig.node.json
+- vite.config.ts
+- website_images
+  - 1.png
+  - 2.png
+  - 3.png
+  - 4.png
+  - 5.png
+  - 6.png
+  - 7.png
+  - app-design.jpg

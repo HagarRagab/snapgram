@@ -64,17 +64,19 @@ Built with developer best practices, Snapgram integrates **React Hook Form** wit
       - PostCaption.tsx
       - PostCard.tsx
       - PostCreatorInfo.tsx
+      - PostList.tsx
       - PostStats.tsx
+      - ProfileImage.tsx
       - ProfileInfo.tsx
       - ProfileStat.tsx
       - ProfileStats.tsx
       - ProfileTab.tsx
       - ProfileTabs.tsx
       - SearchResults.tsx
+      - SpinnerFullPage.tsx
       - Topbar.tsx
       - TopPage.tsx
       - UpdatePostImage.tsx
-      - UpdateProfileImage.tsx
       - UserCard.tsx
     - ui
       - button.tsx

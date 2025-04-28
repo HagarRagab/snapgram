@@ -60,3 +60,27 @@ export const formatNumbers = (num: number) =>
     }).format(num);
 
 export const formatName = (name: string) => "@" + name.replace(/\s/g, "");
+
+export const generateImageUrl = (
+    id?: string,
+    bucket?: "media" | "profiles"
+) => {
+    if (!id || !bucket) return;
+    let bucketId;
+    if (bucket === "media") bucketId = import.meta.env.VITE_APPWRITE_STORAGE_ID;
+    else bucketId = import.meta.env.VITE_APPWRITE_STORAGE_PROFILES_ID;
+
+    return `${
+        import.meta.env.VITE_APPWRITE_URL
+    }/storage/buckets/${bucketId}/files/${id}/view?project=${
+        import.meta.env.VITE_APPWRITE_PROJECT_ID
+    }`;
+};
+
+export const defaultProfileImageUrl = (profileName: string) => {
+    return `${
+        import.meta.env.VITE_APPWRITE_URL
+    }/avatars/initials?name=${profileName}&project=${
+        import.meta.env.VITE_APPWRITE_PROJECT_ID
+    }`;
+};

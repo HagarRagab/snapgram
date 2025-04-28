@@ -11,6 +11,7 @@ const INITIAL_USER: IUser = {
     name: "",
     username: "",
     email: "",
+    imageId: "",
     imageUrl: "",
     bio: "",
 };
@@ -46,6 +47,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
                     name: currentUser.name,
                     username: currentUser.username,
                     email: currentUser.email,
+                    imageId: currentUser.imageId,
                     imageUrl: currentUser.imageUrl,
                     bio: currentUser.bio,
                 });

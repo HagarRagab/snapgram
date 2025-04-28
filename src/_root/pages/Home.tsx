@@ -36,8 +36,8 @@ function Home() {
                         <PageError>No found posts</PageError>
                     ) : (
                         <ul className="flex flex-1 flex-col w-full gap-9">
-                            {posts?.pages?.map((item) => {
-                                return item?.documents.map(
+                            {posts?.pages?.map((page) => {
+                                return page?.documents.map(
                                     (post: Models.Document) => (
                                         <li
                                             key={post.$id}

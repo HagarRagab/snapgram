@@ -2,11 +2,11 @@ import { Models } from "appwrite";
 import { Link } from "react-router";
 
 import { useAuthContext } from "@/context/AuthContext";
-import PostStats from "./PostStats";
-import imagePlaceholder from "/assets/icons/profile-placeholder.svg";
-import editIcon from "/assets/icons/edit.svg";
-import PostCreatorInfo from "./PostCreatorInfo";
+import { generateImageUrl } from "@/utils/utils";
 import PostCaption from "./PostCaption";
+import PostCreatorInfo from "./PostCreatorInfo";
+import PostStats from "./PostStats";
+import editIcon from "/assets/icons/edit.svg";
 
 type PostCardProp = {
     post: Models.Document;
@@ -14,12 +14,7 @@ type PostCardProp = {
 
 function PostCard({ post }: PostCardProp) {
     const { user } = useAuthContext();
-
-    const postImageUrl = `${
-        import.meta.env.VITE_APPWRITE_URL
-    }/storage/buckets/${import.meta.env.VITE_APPWRITE_STORAGE_ID}/files/${
-        post.imageId
-    }/view?project=${import.meta.env.VITE_APPWRITE_PROJECT_ID}`;
+    const postImageUrl = generateImageUrl(post?.imageId, "media");
 
     return (
         <div className="post-card">
@@ -48,7 +43,7 @@ function PostCard({ post }: PostCardProp) {
                 <PostCaption post={post} />
                 {/* Post image */}
                 <img
-                    src={postImageUrl || imagePlaceholder}
+                    src={postImageUrl}
                     alt={post.caption}
                     className="post-card_img"
                 />

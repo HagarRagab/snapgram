@@ -1,18 +1,24 @@
 import { useCallback, useState } from "react";
 import { FileWithPath, useDropzone } from "react-dropzone";
 
-import UpdatePostImage from "./UpdatePostImage";
-import UpdateProfileImage from "./UpdateProfileImage";
 import { convertFileToUrl } from "@/utils/utils";
+import ProfileImage from "./ProfileImage";
+import UpdatePostImage from "./UpdatePostImage";
 
 type FileUploaderProps = {
     fieldChange: (file: File[]) => void;
-    imageUrl: string;
+    imageUrl?: string;
+    fallbackImageUrl?: string;
     type: "post" | "profile";
 };
 
-function FileUploader({ fieldChange, imageUrl, type }: FileUploaderProps) {
-    const [fileUrl, setFileUrl] = useState<string>(imageUrl);
+function FileUploader({
+    fieldChange,
+    imageUrl,
+    fallbackImageUrl,
+    type,
+}: FileUploaderProps) {
+    const [fileUrl, setFileUrl] = useState<string>(imageUrl || "");
 
     const onDrop = useCallback(
         (acceptedFiles: FileWithPath[]) => {
@@ -44,10 +50,18 @@ function FileUploader({ fieldChange, imageUrl, type }: FileUploaderProps) {
         >
             <input {...getInputProps()} />
 
-            {type === "post" ? (
-                <UpdatePostImage fileUrl={fileUrl} />
+            {type === "profile" && fallbackImageUrl ? (
+                <div className="flex items-center gap-4 cursor-pointer w-fit">
+                    <ProfileImage
+                        key={fileUrl}
+                        profileImage={fileUrl}
+                        fallbackProfileImage={fallbackImageUrl}
+                        size="w-25 h-25"
+                    />
+                    <p className="text-cyan">Change profile picture</p>
+                </div>
             ) : (
-                <UpdateProfileImage fileUrl={fileUrl} />
+                <UpdatePostImage fileUrl={fileUrl} />
             )}
         </div>
     );

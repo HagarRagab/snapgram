@@ -1,16 +1,17 @@
 import { useParams } from "react-router";
 
+import EditProfileButton from "@/components/shared/EditProfileButton";
+import FollowButton from "@/components/shared/FollowButton";
+import ProfileStats from "@/components/shared/ProfileStats";
 import {
     useGetFollowers,
     useGetFollowings,
     useGetUserById,
 } from "@/lib/react-query/queries";
-import placeholderImg from "/assets/icons/profile-placeholder.svg";
-import FollowButton from "@/components/shared/FollowButton";
-import ProfileStats from "@/components/shared/ProfileStats";
-import EditProfileButton from "@/components/shared/EditProfileButton";
-import Loader from "./Loader";
 import { IUser } from "@/types";
+import { defaultProfileImageUrl, generateImageUrl } from "@/utils/utils";
+import Loader from "./Loader";
+import ProfileImage from "./ProfileImage";
 
 type ProfileInfoProps = {
     loggedInUser: IUser;
@@ -20,6 +21,9 @@ function ProfileInfo({ loggedInUser }: ProfileInfoProps) {
     const { id } = useParams();
 
     const { data: user } = useGetUserById(id);
+
+    const profileImage = generateImageUrl(user?.imageId, "profiles");
+    const fallbackProfileImage = defaultProfileImageUrl(user?.name);
 
     const { data: followings, isPending: isLoadingFollowings } =
         useGetFollowings("followerId", id);
@@ -33,18 +37,12 @@ function ProfileInfo({ loggedInUser }: ProfileInfoProps) {
 
     if (isLoadingFollowings || isLoadingFollowers) return <Loader />;
 
-    const userImageUrl = `${
-        import.meta.env.VITE_APPWRITE_URL
-    }/avatars/initials?name=${user?.imageUrl}&project=${
-        import.meta.env.VITE_APPWRITE_PROJECT_ID
-    }`;
-
     return (
         <div className="flex gap-6">
-            <img
-                src={userImageUrl || placeholderImg}
-                alt="profile"
-                className="w-20 h-20 rounded-full md:w-38 md:h-38 object-cover"
+            <ProfileImage
+                profileImage={profileImage}
+                fallbackProfileImage={fallbackProfileImage}
+                size="w-20 h-20 md:w-38 md:h-38"
             />
 
             {/* User profile info */}

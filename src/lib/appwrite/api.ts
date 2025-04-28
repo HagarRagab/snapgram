@@ -1,4 +1,6 @@
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
+import { formatName, generateImageUrl } from "@/utils/utils";
+import { ID, ImageGravity, Query } from "appwrite";
 import {
     account,
     appwriteConfig,
@@ -6,8 +8,6 @@ import {
     databases,
     storage,
 } from "./appwrite";
-import { ID, ImageGravity, Query } from "appwrite";
-import { formatName } from "@/utils/utils";
 
 //* Steps to sign up
 // 1. create new account  2. save new account in database 3. logging in > creating session
@@ -462,7 +462,7 @@ export async function updateUser(newInfo: IUpdateUser) {
             image = {
                 ...image,
                 imageId: createdFile.$id,
-                imageUrl: new URL(filePreviewUrl),
+                imageUrl: generateImageUrl(createdFile.$id, "profiles"),
             };
         }
 
@@ -484,10 +484,10 @@ export async function updateUser(newInfo: IUpdateUser) {
                     image.imageId,
                     appwriteConfig.storageProfilesId
                 );
+            await deleteFile(newInfo.imageId, appwriteConfig.storageProfilesId);
             throw Error;
         }
 
-        await deleteFile(newInfo.imageId, appwriteConfig.storageProfilesId);
         return updatedUser;
     } catch (error) {
         console.error(error);

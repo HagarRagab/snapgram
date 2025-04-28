@@ -1,27 +1,30 @@
-import { Link } from "react-router";
 import { Models } from "appwrite";
+import { Link } from "react-router";
 
-import imagePlaceholder from "/assets/icons/profile-placeholder.svg";
-import { multiFormatDateString } from "@/utils/utils";
+import {
+    defaultProfileImageUrl,
+    generateImageUrl,
+    multiFormatDateString,
+} from "@/utils/utils";
+import ProfileImage from "./ProfileImage";
 
 type PostCreatorInfoProp = {
     post?: Models.Document;
 };
 
 function PostCreatorInfo({ post }: PostCreatorInfoProp) {
-    const postCreatorImageUrl = `${
-        import.meta.env.VITE_APPWRITE_URL
-    }/avatars/initials?name=${post?.creator.name}&project=${
-        import.meta.env.VITE_APPWRITE_PROJECT_ID
-    }`;
-
     return (
         <div className="flex items-center gap-3">
             <Link to={`/profile/${post?.creator?.$id}`}>
-                <img
-                    src={postCreatorImageUrl || imagePlaceholder}
-                    alt="creator"
-                    className="rounded-full w-12 lg:h-12"
+                <ProfileImage
+                    profileImage={generateImageUrl(
+                        post?.creator.imageId,
+                        "profiles"
+                    )}
+                    fallbackProfileImage={defaultProfileImageUrl(
+                        post?.creator.name
+                    )}
+                    size="w-12 h-12"
                 />
             </Link>
             <div className="flex flex-col">
