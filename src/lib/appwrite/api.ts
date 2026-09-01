@@ -384,7 +384,7 @@ export async function deletePost(postId?: string, imageId?: string) {
 export async function getPosts(
     limits: number = 9,
     searchTerm?: string,
-    pageParam?: number,
+    pageParam?: string,
 ) {
     const queries: string[] = [
         Query.orderDesc("$createdAt"),
