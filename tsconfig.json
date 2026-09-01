@@ -10,6 +10,6 @@
             "@/*": ["./src/*"]
         },
         "lib": ["ES2021.String"],
-        "ignoreDeprecations": "6.0"
+        "ignoreDeprecations": "5.0"
     }
 }
