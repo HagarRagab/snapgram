@@ -5,6 +5,7 @@ import {
     useQueryClient,
 } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
+import { Models } from "appwrite";
 
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { toast } from "sonner";
@@ -226,28 +227,28 @@ export function useGetPosts({
         queryKey: searchTerm
             ? [QUERY_KEYS.SEARCH_POSTS, searchTerm]
             : [QUERY_KEYS.GET_INFINITE_POSTS],
-        queryFn: ({ pageParam }: { pageParam?: number }) =>
+        queryFn: ({ pageParam }: { pageParam?: string }) =>
             getPosts(limits, searchTerm, pageParam),
-        getNextPageParam: (lastPage: any) => {
+        getNextPageParam: (lastPage: Models.DocumentList<Models.Document>) => {
             // Note that getInfinitePosts returns (e.g., { documents: Post[], total: number })
             if (lastPage?.documents?.length === 0) return null;
             const lastPost = lastPage?.documents?.at(-1);
             return lastPost?.$id;
         },
-        initialPageParam: 0,
+        initialPageParam: undefined as string | undefined,
     });
 }
 
 export function useGetUsers() {
     return useInfiniteQuery({
         queryKey: [QUERY_KEYS.GET_USERS],
-        queryFn: ({ pageParam }: { pageParam?: number }) => getUsers(pageParam),
-        getNextPageParam: (lastPage: any) => {
+        queryFn: ({ pageParam }: { pageParam?: string }) => getUsers(pageParam),
+        getNextPageParam: (lastPage: Models.DocumentList<Models.Document>) => {
             if (lastPage?.documents.length === 0) return null;
             const lastPost = lastPage?.documents?.at(-1);
-            return lastPost.$id;
+            if (lastPost) return lastPost?.$id;
         },
-        initialPageParam: 0,
+        initialPageParam: undefined as string | undefined,
     });
 }
 

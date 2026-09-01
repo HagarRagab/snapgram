@@ -64,8 +64,23 @@ function SignupForm() {
                 form.reset();
                 navigate("/");
             } else return toast("Sign in was failed. Please try again.");
-        } catch (error) {
-            console.log(error);
+        } catch (error: unknown) {
+            console.error(error);
+            // Check if error is due to duplicate email/username using Appwrite error type/code
+            const isDuplicateUserError =
+                error instanceof Error &&
+                "type" in error &&
+                ((error.type as string) === "user_already_exists" ||
+                    (error.type as string) === "general_argument_invalid" ||
+                    ("code" in error && (error.code as number) === 409));
+
+            if (isDuplicateUserError) {
+                toast.error(
+                    "Email or username already exists. Please use a different one.",
+                );
+            } else {
+                toast.error("Sign up failed. Please try again.");
+            }
         }
     }
 

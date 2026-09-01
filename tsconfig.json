@@ -9,6 +9,7 @@
         "paths": {
             "@/*": ["./src/*"]
         },
-        "lib": ["ES2021.String"]
+        "lib": ["ES2021.String"],
+        "ignoreDeprecations": "6.0"
     }
 }

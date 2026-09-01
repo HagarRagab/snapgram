@@ -31,8 +31,8 @@ function SigninForm() {
     const form = useForm<z.infer<typeof signinValidationSchema>>({
         resolver: zodResolver(signinValidationSchema),
         defaultValues: {
-            email: "",
-            password: "",
+            email: "hagar@dev.com",
+            password: "123456789",
         },
     });
 
